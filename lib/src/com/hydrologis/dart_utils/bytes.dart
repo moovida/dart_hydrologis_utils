@@ -62,7 +62,7 @@ class ByteConversionUtilities {
   }
 
   /// Convert a 64 bit double [number] to its int representation.
-  static List<int> bytesFromDouble(double number,
+  static List<int> bytesFromDouble64(double number,
       [Endian endian = Endian.big]) {
     var tmp = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
     ByteData bdata = ByteData.view(tmp.buffer);

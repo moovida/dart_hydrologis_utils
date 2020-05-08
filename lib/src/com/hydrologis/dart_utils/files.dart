@@ -205,7 +205,7 @@ class FileReader {
     var data = Uint8List.fromList(await channel.read(8));
     return ByteConversionUtilities.getDouble64(data, endian);
   }
-  
+
   Future<double> getDouble32([Endian endian = Endian.big]) async {
     var data = Uint8List.fromList(await channel.read(4));
     return ByteConversionUtilities.getDouble32(data, endian);
@@ -250,5 +250,15 @@ class FileWriter {
 
   Future<void> put(List<int> buffer) async {
     await randomAccessFile.writeFrom(buffer);
+  }
+
+  Future<void> putInt32(int value, [Endian endian = Endian.big]) async {
+    var bytes = ByteConversionUtilities.bytesFromInt32(value, endian);
+    await randomAccessFile.writeFrom(bytes);
+  }
+
+  Future<void> putDouble64(double value, [Endian endian = Endian.big]) async {
+    var bytes = ByteConversionUtilities.bytesFromDouble64(value, endian);
+    await randomAccessFile.writeFrom(bytes);
   }
 }
