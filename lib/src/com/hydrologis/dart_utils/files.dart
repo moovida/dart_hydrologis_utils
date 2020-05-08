@@ -201,9 +201,14 @@ class FileReader {
     return ByteConversionUtilities.getInt32(data, endian);
   }
 
-  Future<double> getDouble([Endian endian = Endian.big]) async {
+  Future<double> getDouble64([Endian endian = Endian.big]) async {
     var data = Uint8List.fromList(await channel.read(8));
     return ByteConversionUtilities.getDouble64(data, endian);
+  }
+  
+  Future<double> getDouble32([Endian endian = Endian.big]) async {
+    var data = Uint8List.fromList(await channel.read(4));
+    return ByteConversionUtilities.getDouble32(data, endian);
   }
 
   Future skip(int bytesToSkip) async {

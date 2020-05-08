@@ -5,7 +5,6 @@ part of dart_hydrologis_utils;
  * found in the LICENSE file.
  */
 
-
 /// Class to handle int conversions.
 class ByteConversionUtilities {
   /// Convert a 32 bit integer [number] to its int representation.
@@ -28,6 +27,12 @@ class ByteConversionUtilities {
   static double getDouble64(Uint8List list, [Endian endian = Endian.big]) {
     var bdata = ByteData.view(list.buffer);
     return bdata.getFloat64(0, endian);
+  }
+
+  /// Get a double from a list of 4 bytes.
+  static double getDouble32(Uint8List list, [Endian endian = Endian.big]) {
+    var bdata = ByteData.view(list.buffer);
+    return bdata.getFloat32(0, endian);
   }
 
   /// Get an int from a list of 4 bytes.
