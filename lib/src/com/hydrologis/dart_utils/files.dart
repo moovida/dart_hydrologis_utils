@@ -220,8 +220,15 @@ class FileWriter {
   bool _isOpen = false;
   RandomAccessFile randomAccessFile;
 
-  FileWriter(this._file) {
-    randomAccessFile = _file.openSync();
+  FileWriter(this._file, {overwrite: true}) {
+    if (_file.existsSync()) {
+      if (overwrite) {
+        _file.deleteSync();
+      } else {
+        throw StateError("The file $_file already exists. Can't overwrite");
+      }
+    }
+    randomAccessFile = _file.openSync(mode: FileMode.append);
     _isOpen = true;
   }
 
