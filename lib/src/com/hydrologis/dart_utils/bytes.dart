@@ -24,21 +24,27 @@ class ByteConversionUtilities {
     return tmp;
   }
 
+  /// Get a double from a list of 8 bytes.
+  static double getDouble64(Uint8List list, [Endian endian = Endian.big]) {
+    var bdata = ByteData.view(list.buffer);
+    return bdata.getFloat64(0, endian);
+  }
+
   /// Get an int from a list of 4 bytes.
   static int getInt32(Uint8List list, [Endian endian = Endian.big]) {
-    var bdata = new ByteData.view(list.buffer);
+    var bdata = ByteData.view(list.buffer);
     return bdata.getInt32(0, endian);
   }
 
   /// Get an int from a list of 2 bytes.
   static int getInt16(Uint8List list, [Endian endian = Endian.big]) {
-    var bdata = new ByteData.view(list.buffer);
+    var bdata = ByteData.view(list.buffer);
     return bdata.getInt16(0, endian);
   }
 
   /// Get an int from a list of 1 byte.
   static int getInt8(Uint8List list) {
-    var bdata = new ByteData.view(list.buffer);
+    var bdata = ByteData.view(list.buffer);
     return bdata.getInt8(0);
   }
 

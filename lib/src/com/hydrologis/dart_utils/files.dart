@@ -161,7 +161,7 @@ class FileUtilities {
   }
 
   /// Get a temporary file.
-  /// 
+  ///
   /// This method doesn't create the file.
   static File getTmpFile(ext, {prefix: 'tmp_', postfix}) {
     postfix ??= TimeUtilities.DAYHOURMINUTE_TS_FORMATTER.format(DateTime.now());
@@ -199,6 +199,11 @@ class FileReader {
   Future<int> getInt32([Endian endian = Endian.big]) async {
     var data = Uint8List.fromList(await channel.read(4));
     return ByteConversionUtilities.getInt32(data, endian);
+  }
+
+  Future<double> getDouble([Endian endian = Endian.big]) async {
+    var data = Uint8List.fromList(await channel.read(8));
+    return ByteConversionUtilities.getDouble64(data, endian);
   }
 
   Future skip(int bytesToSkip) async {
