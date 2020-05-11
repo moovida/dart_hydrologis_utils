@@ -378,6 +378,10 @@ class LByteBuffer {
     return _data[_position];
   }
 
+  String getByteChar() {
+    return String.fromCharCode(_data[_position]);
+  }
+
   List<int> get(int length) {
     var sublist = _data.sublist(_position, _position + length);
     _position += length;
@@ -503,8 +507,8 @@ class FileWriter {
   Future<void> put(List<int> buffer) async {
     await randomAccessFile.writeFrom(buffer);
   }
-  
-  Future<void> putBuffer(LByteBuffer  buffer) async {
+
+  Future<void> putBuffer(LByteBuffer buffer) async {
     await randomAccessFile.writeFrom(buffer._data);
   }
 
