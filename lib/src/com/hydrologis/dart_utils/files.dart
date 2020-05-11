@@ -420,6 +420,13 @@ class LByteBuffer {
 
   int get limit => _limit;
 
+  set limit(int newLimit) {
+    _limit = newLimit;
+    if (_position > _limit) {
+      _position = _limit;
+    }
+  }
+
   int get remaining => _limit - position;
 
   bool get isReadOnly => readOnly;
