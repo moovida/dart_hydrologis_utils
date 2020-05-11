@@ -378,11 +378,11 @@ class LByteBuffer {
   }
 
   int getByte() {
-    return _data[_position];
+    return _data[_position++];
   }
 
   String getByteChar() {
-    return String.fromCharCode(_data[_position]);
+    return String.fromCharCode(_data[_position++]);
   }
 
   List<int> get(int length) {
@@ -428,6 +428,9 @@ class LByteBuffer {
   void compact() {
     var sublist = _data.sublist(_position, _limit);
     _data.setRange(0, sublist.length, sublist);
+    _limit = _data.length;
+    _position = sublist.length;
+    _mark = 0;
   }
 
   void flip() {
@@ -461,9 +464,9 @@ class LByteBuffer {
       _data.setRange(position, position + read.length, read);
       position += read.length;
     } else {
-      position += remaining;
       _data.setRange(
           position, position + remaining, read.sublist(0, remaining));
+      position += remaining;
     }
   }
 
