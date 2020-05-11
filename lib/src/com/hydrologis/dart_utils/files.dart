@@ -179,6 +179,9 @@ abstract class AFileReader {
   /// Get [bytesCount] of bytes into a list.
   Future<List<int>> get(int bytesCount);
 
+  /// Get [bytesCount] of bytes into a [LByteBuffer].
+  Future<LByteBuffer> getBuffer(int bytesCount);
+
   /// Get a single byte.
   Future<int> getByte();
 
@@ -221,6 +224,11 @@ class FileReaderBuffered extends AFileReader {
   @override
   Future<List<int>> get(int bytesCount) async {
     return await channel.read(bytesCount);
+  }
+
+  @override
+  Future<LByteBuffer> getBuffer(int bytesCount) async {
+    return LByteBuffer(await channel.read(bytesCount));
   }
 
   @override
@@ -277,6 +285,11 @@ class FileReaderRandom extends AFileReader {
   }
 
   @override
+  Future<LByteBuffer> getBuffer(int bytesCount) async {
+    return LByteBuffer(await channel.read(bytesCount));
+  }
+
+  @override
   Future<int> getInt32([Endian endian = Endian.big]) async {
     var data = Uint8List.fromList(await channel.read(4));
     return ByteConversionUtilities.getInt32(data, endian);
@@ -316,6 +329,52 @@ class FileReaderRandom extends AFileReader {
       channel?.closeSync();
     }
   }
+}
+
+/// A byte buffer that wraps a list of bytes.
+///
+/// Simplifies access to data.
+class LByteBuffer {
+  final List<int> _data;
+
+  int _position = 0;
+
+  LByteBuffer(this._data);
+
+  int getByte() {
+    return _data[_position];
+  }
+
+  List<int> get(int length) {
+    var sublist = _data.sublist(_position, _position + length);
+    _position += length;
+    return sublist;
+  }
+
+  int getInt32([Endian endian = Endian.big]) {
+    var data = Uint8List.fromList(get(4));
+    return ByteConversionUtilities.getInt32(data, endian);
+  }
+
+  double getDouble64([Endian endian = Endian.big]) {
+    var data = Uint8List.fromList(get(8));
+    return ByteConversionUtilities.getDouble64(data, endian);
+  }
+
+  double getDouble32([Endian endian = Endian.big]) {
+    var data = Uint8List.fromList(get(4));
+    return ByteConversionUtilities.getDouble32(data, endian);
+  }
+
+  Future skip(int bytesToSkip) async {
+    _position += bytesToSkip;
+  }
+
+  void setPosition(int newPosition) {
+    _position = newPosition;
+  }
+
+  int get position => _position;
 }
 
 /// A writer class.
