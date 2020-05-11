@@ -411,6 +411,12 @@ class LByteBuffer {
     _position = 0;
   }
 
+  void compact() {
+    var sublist = _data.sublist(_position, _limit);
+    _data.removeRange(0, sublist.length);
+    _data.insertAll(0, sublist);
+  }
+
   void flip() {
     _limit = position;
     _position = 0;
