@@ -403,7 +403,7 @@ class LByteBuffer {
 
   bool get isReadOnly => readOnly;
 
-  void setEndian(Endian newEndian) {
+  set endian(Endian newEndian) {
     _endian = newEndian;
   }
 }
