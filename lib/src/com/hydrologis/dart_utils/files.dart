@@ -173,18 +173,14 @@ class FileUtilities {
 }
 
 /// A reader class to wrap the buffer method/package used.
-class FileReader {
+class FileReaderBuffered {
   final File _file;
   bool _isOpen = false;
-  dynamic channel;
+  ChunkedStreamIterator channel;
 
-  FileReader(this._file, {buffered: false}) {
-    if (buffered) {
-      Stream<List<int>> stream = _file.openRead();
-      channel = ChunkedStreamIterator(stream);
-    } else {
-      channel = _file.openSync();
-    }
+  FileReaderBuffered(this._file) {
+    Stream<List<int>> stream = _file.openRead();
+    channel = ChunkedStreamIterator(stream);
     _isOpen = true;
   }
 
@@ -216,6 +212,59 @@ class FileReader {
   }
 
   bool get isOpen => _isOpen;
+
+  void close() {
+    _isOpen = false;
+  }
+}
+
+/// A reader class to wrap the random method/package used.
+class FileReaderRandom {
+  final File _file;
+  bool _isOpen = false;
+  RandomAccessFile channel;
+
+  FileReaderRandom(this._file) {
+    channel = _file.openSync();
+    _isOpen = true;
+  }
+
+  Future<int> getByte() async {
+    return (await channel.read(1))[0];
+  }
+
+  Future<List<int>> get(int bytesCount) async {
+    return await channel.read(bytesCount);
+  }
+
+  Future<int> getInt32([Endian endian = Endian.big]) async {
+    var data = Uint8List.fromList(await channel.read(4));
+    return ByteConversionUtilities.getInt32(data, endian);
+  }
+
+  Future<double> getDouble64([Endian endian = Endian.big]) async {
+    var data = Uint8List.fromList(await channel.read(8));
+    return ByteConversionUtilities.getDouble64(data, endian);
+  }
+
+  Future<double> getDouble32([Endian endian = Endian.big]) async {
+    var data = Uint8List.fromList(await channel.read(4));
+    return ByteConversionUtilities.getDouble32(data, endian);
+  }
+
+  Future skip(int bytesToSkip) async {
+    await channel.read(bytesToSkip);
+  }
+
+  bool get isOpen => _isOpen;
+
+  Future<void> setPosition(int newPosition) async {
+    await channel.setPosition(newPosition);
+  }
+
+  Future<int> position() async {
+    return await channel.position();
+  }
 
   void close() {
     if (channel is RandomAccessFile) {
