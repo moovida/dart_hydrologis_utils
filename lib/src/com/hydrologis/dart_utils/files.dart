@@ -182,6 +182,8 @@ abstract class AFileReader {
   /// Get [bytesCount] of bytes into a [LByteBuffer].
   Future<LByteBuffer> getBuffer(int bytesCount);
 
+  Future<void> readBuffer(LByteBuffer buffer);
+
   /// Get a single byte.
   Future<int> getByte();
 
@@ -224,6 +226,12 @@ class FileReaderBuffered extends AFileReader {
   @override
   Future<List<int>> get(int bytesCount) async {
     return await channel.read(bytesCount);
+  }
+
+  @override
+  Future<void> readBuffer(LByteBuffer buffer) async {
+    List<int> read = await channel.read(buffer.remaining);
+    buffer.set(read);
   }
 
   @override
@@ -282,6 +290,12 @@ class FileReaderRandom extends AFileReader {
   @override
   Future<List<int>> get(int bytesCount) async {
     return await channel.read(bytesCount);
+  }
+
+  @override
+  Future<void> readBuffer(LByteBuffer buffer) async {
+    List<int> read = await channel.read(buffer.remaining);
+    buffer.set(read);
   }
 
   @override
@@ -363,18 +377,18 @@ class LByteBuffer {
   }
 
   int getInt32() {
-    var data = Uint8List.fromList(get(4));
-    return ByteConversionUtilities.getInt32(data, _endian);
+    var ul = Uint8List.fromList(get(4));
+    return ByteConversionUtilities.getInt32(ul, _endian);
   }
 
   double getDouble64() {
-    var data = Uint8List.fromList(get(8));
-    return ByteConversionUtilities.getDouble64(data, _endian);
+    var ul = Uint8List.fromList(get(8));
+    return ByteConversionUtilities.getDouble64(ul, _endian);
   }
 
   double getDouble32() {
-    var data = Uint8List.fromList(get(4));
-    return ByteConversionUtilities.getDouble32(data, _endian);
+    var ul = Uint8List.fromList(get(4));
+    return ByteConversionUtilities.getDouble32(ul, _endian);
   }
 
   Future skip(int bytesToSkip) async {
@@ -405,6 +419,14 @@ class LByteBuffer {
 
   set endian(Endian newEndian) {
     _endian = newEndian;
+  }
+
+  void set(List<int> read) {
+    if (read.length <= remaining) {
+      _data.insertAll(position, read);
+    } else {
+      _data.insertAll(position, read.sublist(0, remaining));
+    }
   }
 }
 
