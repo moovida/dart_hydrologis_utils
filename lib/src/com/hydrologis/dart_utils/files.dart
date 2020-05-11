@@ -490,7 +490,8 @@ class LByteBuffer {
   }
 
   void put(LByteBuffer buffer) {
-    _data.insertAll(0, buffer._data);
+    _data.setRange(0, buffer._data.length, buffer._data);
+    position = buffer._data.length;
   }
 }
 
