@@ -396,6 +396,12 @@ class LByteBuffer {
     return ByteConversionUtilities.getInt32(ul, _endian);
   }
 
+  void putInt32(int num) {
+    var bytesList = ByteConversionUtilities.bytesFromInt32(num, _endian);
+    _data.setRange(_position, _position + bytesList.length, bytesList);
+    _position = _position + bytesList.length;
+  }
+
   double getDouble64() {
     var ul = Uint8List.fromList(get(8));
     return ByteConversionUtilities.getDouble64(ul, _endian);
