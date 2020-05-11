@@ -228,7 +228,7 @@ class FileReaderBuffered extends AFileReader {
 
   @override
   Future<LByteBuffer> getBuffer(int bytesCount) async {
-    return LByteBuffer(await channel.read(bytesCount));
+    return LByteBuffer.fromData(await channel.read(bytesCount));
   }
 
   @override
@@ -286,7 +286,7 @@ class FileReaderRandom extends AFileReader {
 
   @override
   Future<LByteBuffer> getBuffer(int bytesCount) async {
-    return LByteBuffer(await channel.read(bytesCount));
+    return LByteBuffer.fromData(await channel.read(bytesCount));
   }
 
   @override
@@ -335,12 +335,22 @@ class FileReaderRandom extends AFileReader {
 ///
 /// Simplifies access to data.
 class LByteBuffer {
-  final List<int> _data;
+  List<int> _data;
 
   int _position = 0;
-  Endian endian;
+  int _limit = 0;
+  Endian _endian = Endian.big;
 
-  LByteBuffer(this._data, [this.endian = Endian.big]);
+  final bool readOnly;
+
+  LByteBuffer.fromData(this._data, {this.readOnly = false}) {
+    _limit = _data.length;
+  }
+
+  LByteBuffer(int size, {this.readOnly = false}) {
+    _data = List(size);
+    _limit = size;
+  }
 
   int getByte() {
     return _data[_position];
@@ -354,17 +364,17 @@ class LByteBuffer {
 
   int getInt32() {
     var data = Uint8List.fromList(get(4));
-    return ByteConversionUtilities.getInt32(data, endian);
+    return ByteConversionUtilities.getInt32(data, _endian);
   }
 
   double getDouble64() {
     var data = Uint8List.fromList(get(8));
-    return ByteConversionUtilities.getDouble64(data, endian);
+    return ByteConversionUtilities.getDouble64(data, _endian);
   }
 
   double getDouble32() {
     var data = Uint8List.fromList(get(4));
-    return ByteConversionUtilities.getDouble32(data, endian);
+    return ByteConversionUtilities.getDouble32(data, _endian);
   }
 
   Future skip(int bytesToSkip) async {
@@ -375,7 +385,27 @@ class LByteBuffer {
     _position = newPosition;
   }
 
+  void clear() {
+    _limit = _data.length;
+    _position = 0;
+  }
+
+  void flip() {
+    _limit = position;
+    _position = 0;
+  }
+
   int get position => _position;
+
+  int get limit => _limit;
+
+  int get remaining => _limit - position;
+
+  bool get isReadOnly => readOnly;
+
+  void setEndian(Endian newEndian) {
+    _endian = newEndian;
+  }
 }
 
 /// A writer class.
