@@ -398,7 +398,7 @@ class LByteBuffer {
     return ByteConversionUtilities.getDouble32(ul, _endian);
   }
 
-  Future skip(int bytesToSkip) async {
+  void skip(int bytesToSkip) {
     _position += bytesToSkip;
   }
 
