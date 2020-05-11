@@ -338,8 +338,9 @@ class LByteBuffer {
   final List<int> _data;
 
   int _position = 0;
+  Endian endian;
 
-  LByteBuffer(this._data);
+  LByteBuffer(this._data, [this.endian = Endian.big]);
 
   int getByte() {
     return _data[_position];
@@ -351,17 +352,17 @@ class LByteBuffer {
     return sublist;
   }
 
-  int getInt32([Endian endian = Endian.big]) {
+  int getInt32() {
     var data = Uint8List.fromList(get(4));
     return ByteConversionUtilities.getInt32(data, endian);
   }
 
-  double getDouble64([Endian endian = Endian.big]) {
+  double getDouble64() {
     var data = Uint8List.fromList(get(8));
     return ByteConversionUtilities.getDouble64(data, endian);
   }
 
-  double getDouble32([Endian endian = Endian.big]) {
+  double getDouble32() {
     var data = Uint8List.fromList(get(4));
     return ByteConversionUtilities.getDouble32(data, endian);
   }
