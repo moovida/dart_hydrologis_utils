@@ -359,6 +359,7 @@ class LByteBuffer {
   List<int> _data;
 
   int _position = 0;
+  int _mark = 0;
   int _limit = 0;
   Endian _endian = Endian.big;
 
@@ -449,6 +450,19 @@ class LByteBuffer {
     } else {
       _data.insertAll(position, read.sublist(0, remaining));
     }
+  }
+
+  void mark() {
+    _mark = _position;
+  }
+
+  void reset() {
+    _position = _mark;
+  }
+
+  void rewind() {
+    _position = 0;
+    _mark = 0;
   }
 
   void put(LByteBuffer buffer) {
