@@ -444,6 +444,10 @@ class LByteBuffer {
       _data.insertAll(position, read.sublist(0, remaining));
     }
   }
+
+  void put(LByteBuffer buffer) {
+    _data.insertAll(0, buffer._data);
+  }
 }
 
 /// A writer class.
