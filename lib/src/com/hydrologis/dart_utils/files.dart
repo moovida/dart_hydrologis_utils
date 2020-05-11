@@ -400,7 +400,7 @@ class LByteBuffer {
 
   void putDouble64(double num) {
     var bytesList = ByteConversionUtilities.bytesFromDouble64(num, _endian);
-    _data.replaceRange(_position, _position + bytesList.length, bytesList);
+    _data.setRange(_position, _position + bytesList.length, bytesList);
     _position = _position + bytesList.length;
   }
 
@@ -424,7 +424,7 @@ class LByteBuffer {
 
   void compact() {
     var sublist = _data.sublist(_position, _limit);
-    _data.replaceRange(0, sublist.length, sublist);
+    _data.setRange(0, sublist.length, sublist);
   }
 
   void flip() {
@@ -455,9 +455,9 @@ class LByteBuffer {
 
   void set(List<int> read) {
     if (read.length <= remaining) {
-      _data.replaceRange(position, position + read.length, read);
+      _data.setRange(position, position + read.length, read);
     } else {
-      _data.replaceRange(
+      _data.setRange(
           position, position + remaining, read.sublist(0, remaining));
     }
   }
