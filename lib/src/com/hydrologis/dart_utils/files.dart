@@ -402,7 +402,7 @@ class LByteBuffer {
     _position += bytesToSkip;
   }
 
-  void setPosition(int newPosition) {
+  set position(int newPosition) {
     _position = newPosition;
   }
 
@@ -430,6 +430,8 @@ class LByteBuffer {
   int get remaining => _limit - position;
 
   bool get isReadOnly => readOnly;
+
+  int get capacity => _data.length;
 
   set endian(Endian newEndian) {
     _endian = newEndian;
