@@ -172,8 +172,37 @@ class FileUtilities {
   }
 }
 
+/// File reader class, be it buffered or random.
+///
+/// This class can't rewind.
+abstract class AFileReader {
+  /// Get [bytesCount] of bytes into a list.
+  Future<List<int>> get(int bytesCount);
+
+  /// Get a single byte.
+  Future<int> getByte();
+
+  /// Get a 4 bytes integer with a chosen [endian]ness.
+  Future<int> getInt32([Endian endian = Endian.big]);
+
+  /// Get a 8 bytes double with a chosen [endian]ness.
+  Future<double> getDouble64([Endian endian = Endian.big]);
+
+  /// Get a 4 bytes float with a chosen [endian]ness.
+  Future<double> getDouble32([Endian endian = Endian.big]);
+
+  /// Skip [bytesToSkip] bytes.
+  Future skip(int bytesToSkip);
+
+  /// Check if the file is open.
+  bool get isOpen;
+
+  /// Close the reader.
+  void close();
+}
+
 /// A reader class to wrap the buffer method/package used.
-class FileReaderBuffered {
+class FileReaderBuffered extends AFileReader {
   final File _file;
   bool _isOpen = false;
   ChunkedStreamIterator channel;
@@ -184,42 +213,50 @@ class FileReaderBuffered {
     _isOpen = true;
   }
 
+  @override
   Future<int> getByte() async {
     return (await channel.read(1))[0];
   }
 
+  @override
   Future<List<int>> get(int bytesCount) async {
     return await channel.read(bytesCount);
   }
 
+  @override
   Future<int> getInt32([Endian endian = Endian.big]) async {
     var data = Uint8List.fromList(await channel.read(4));
     return ByteConversionUtilities.getInt32(data, endian);
   }
 
+  @override
   Future<double> getDouble64([Endian endian = Endian.big]) async {
     var data = Uint8List.fromList(await channel.read(8));
     return ByteConversionUtilities.getDouble64(data, endian);
   }
 
+  @override
   Future<double> getDouble32([Endian endian = Endian.big]) async {
     var data = Uint8List.fromList(await channel.read(4));
     return ByteConversionUtilities.getDouble32(data, endian);
   }
 
+  @override
   Future skip(int bytesToSkip) async {
     await channel.read(bytesToSkip);
   }
 
+  @override
   bool get isOpen => _isOpen;
 
+  @override
   void close() {
     _isOpen = false;
   }
 }
 
 /// A reader class to wrap the random method/package used.
-class FileReaderRandom {
+class FileReaderRandom extends AFileReader {
   final File _file;
   bool _isOpen = false;
   RandomAccessFile channel;
@@ -229,33 +266,40 @@ class FileReaderRandom {
     _isOpen = true;
   }
 
+  @override
   Future<int> getByte() async {
     return (await channel.read(1))[0];
   }
 
+  @override
   Future<List<int>> get(int bytesCount) async {
     return await channel.read(bytesCount);
   }
 
+  @override
   Future<int> getInt32([Endian endian = Endian.big]) async {
     var data = Uint8List.fromList(await channel.read(4));
     return ByteConversionUtilities.getInt32(data, endian);
   }
 
+  @override
   Future<double> getDouble64([Endian endian = Endian.big]) async {
     var data = Uint8List.fromList(await channel.read(8));
     return ByteConversionUtilities.getDouble64(data, endian);
   }
 
+  @override
   Future<double> getDouble32([Endian endian = Endian.big]) async {
     var data = Uint8List.fromList(await channel.read(4));
     return ByteConversionUtilities.getDouble32(data, endian);
   }
 
+  @override
   Future skip(int bytesToSkip) async {
     await channel.read(bytesToSkip);
   }
 
+  @override
   bool get isOpen => _isOpen;
 
   Future<void> setPosition(int newPosition) async {
@@ -266,6 +310,7 @@ class FileReaderRandom {
     return await channel.position();
   }
 
+  @override
   void close() {
     if (channel is RandomAccessFile) {
       channel?.closeSync();
