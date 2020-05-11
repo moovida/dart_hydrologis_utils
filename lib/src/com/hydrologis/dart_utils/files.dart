@@ -503,6 +503,10 @@ class FileWriter {
   Future<void> put(List<int> buffer) async {
     await randomAccessFile.writeFrom(buffer);
   }
+  
+  Future<void> putBuffer(LByteBuffer  buffer) async {
+    await randomAccessFile.writeFrom(buffer._data);
+  }
 
   Future<void> putInt32(int value, [Endian endian = Endian.big]) async {
     var bytes = ByteConversionUtilities.bytesFromInt32(value, endian);
