@@ -302,6 +302,9 @@ class FileReaderRandom extends AFileReader {
   Future<int> readIntoBuffer(LByteBuffer buffer) async {
     List<int> read = await channel.read(buffer.remaining);
     buffer.set(read);
+    if (read == null || read.isEmpty) {
+      return -1;
+    }
     return read.length;
   }
 
@@ -456,7 +459,9 @@ class LByteBuffer {
   void set(List<int> read) {
     if (read.length <= remaining) {
       _data.setRange(position, position + read.length, read);
+      position += read.length;
     } else {
+      position += remaining;
       _data.setRange(
           position, position + remaining, read.sublist(0, remaining));
     }
