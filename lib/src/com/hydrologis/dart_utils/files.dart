@@ -182,7 +182,9 @@ abstract class AFileReader {
   /// Get [bytesCount] of bytes into a [LByteBuffer].
   Future<LByteBuffer> getBuffer(int bytesCount);
 
-  Future<void> readBuffer(LByteBuffer buffer);
+  /// Read the amount of remaining bytes of the [buffer]
+  /// from the reader. returns the real count read.
+  Future<int> readIntoBuffer(LByteBuffer buffer);
 
   /// Get a single byte.
   Future<int> getByte();
@@ -229,9 +231,10 @@ class FileReaderBuffered extends AFileReader {
   }
 
   @override
-  Future<void> readBuffer(LByteBuffer buffer) async {
+  Future<int> readIntoBuffer(LByteBuffer buffer) async {
     List<int> read = await channel.read(buffer.remaining);
     buffer.set(read);
+    return read.length;
   }
 
   @override
@@ -293,9 +296,10 @@ class FileReaderRandom extends AFileReader {
   }
 
   @override
-  Future<void> readBuffer(LByteBuffer buffer) async {
+  Future<int> readIntoBuffer(LByteBuffer buffer) async {
     List<int> read = await channel.read(buffer.remaining);
     buffer.set(read);
+    return read.length;
   }
 
   @override
