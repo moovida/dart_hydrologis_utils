@@ -394,6 +394,12 @@ class LByteBuffer {
     return ByteConversionUtilities.getDouble64(ul, _endian);
   }
 
+  void putDouble64(double num) {
+    var bytesList = ByteConversionUtilities.bytesFromDouble64(num, _endian);
+    _data.replaceRange(_position, _position + bytesList.length, bytesList);
+    _position = _position + bytesList.length;
+  }
+
   double getDouble32() {
     var ul = Uint8List.fromList(get(4));
     return ByteConversionUtilities.getDouble32(ul, _endian);
@@ -414,8 +420,7 @@ class LByteBuffer {
 
   void compact() {
     var sublist = _data.sublist(_position, _limit);
-    _data.removeRange(0, sublist.length);
-    _data.insertAll(0, sublist);
+    _data.replaceRange(0, sublist.length, sublist);
   }
 
   void flip() {
@@ -446,9 +451,10 @@ class LByteBuffer {
 
   void set(List<int> read) {
     if (read.length <= remaining) {
-      _data.insertAll(position, read);
+      _data.replaceRange(position, position + read.length, read);
     } else {
-      _data.insertAll(position, read.sublist(0, remaining));
+      _data.replaceRange(
+          position, position + remaining, read.sublist(0, remaining));
     }
   }
 
