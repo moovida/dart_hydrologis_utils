@@ -4,17 +4,6 @@ import 'package:test/test.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 
 void main() {
-  group('Mixed up tests', () {
-    test('codeunit tests', () {
-      var cu = '0'.codeUnits;
-      expect(cu.length, 1);
-      expect(cu[0], 48);
-
-      cu = '\x00'.codeUnits;
-      expect(cu.length, 1);
-      expect(cu[0], 0);
-    });
-  });
   group('Files tests', () {
     test('bytes check', () async {
       var chineseShp = File('./test/files/chinese_poly.shp');
@@ -26,8 +15,6 @@ void main() {
           r = await reader.readIntoBuffer(buffer);
         }
         buffer.flip();
-        print(buffer);
-
         for (var i = 0; i < chinShpBytes.length; i++) {
           var byte = buffer.getByte();
           expect(byte, chinShpBytes[i],
