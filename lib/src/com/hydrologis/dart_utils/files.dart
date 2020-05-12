@@ -304,6 +304,7 @@ class FileReaderRandom extends AFileReader {
     int read = await channel.readInto(
         buffer._data, buffer.position, buffer.position + buffer.remaining);
     // buffer.set(read);
+    buffer.position = buffer.position + read;
     if (read <= 0) {
       return -1;
     }
