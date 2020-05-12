@@ -302,9 +302,8 @@ class FileReaderRandom extends AFileReader {
   Future<int> readIntoBuffer(LByteBuffer buffer) async {
     // List<int> read = [];
     int read = await channel.readInto(
-        buffer._data, buffer.position, buffer.position + buffer.remaining);
-    // buffer.set(read);
-    buffer.position = buffer.position + read;
+        buffer._data, buffer._position, buffer._position + buffer.remaining);
+    buffer._position = buffer._position + read;
     if (read <= 0) {
       return -1;
     }
@@ -365,18 +364,27 @@ class LByteBuffer {
   List<int> _data;
 
   int _position = 0;
-  int _mark = 0;
+  int _mark = -1;
   int _limit = 0;
   Endian _endian = Endian.big;
 
   final bool readOnly;
 
-  LByteBuffer.fromData(this._data, {this.readOnly = false}) {
+  LByteBuffer.fromData(List data, {this.readOnly = false, doSigned = false}) {
+    if (doSigned) {
+      _data = Int8List.fromList(data);
+    } else {
+      _data = Uint8List.fromList(data);
+    }
     _limit = _data.length;
   }
 
-  LByteBuffer(int size, {this.readOnly = false}) {
-    _data = List(size);
+  LByteBuffer(int size, {this.readOnly = false, doSigned = false}) {
+    if (doSigned) {
+      _data = Int8List(size);
+    } else {
+      _data = Uint8List(size);
+    }
     _limit = size;
   }
 
@@ -443,7 +451,7 @@ class LByteBuffer {
   }
 
   void flip() {
-    _limit = position;
+    _limit = _position;
     _position = 0;
   }
 
@@ -458,7 +466,7 @@ class LByteBuffer {
     }
   }
 
-  int get remaining => _limit - position;
+  int get remaining => _limit - _position;
 
   bool get isReadOnly => readOnly;
 
@@ -470,12 +478,12 @@ class LByteBuffer {
 
   void set(List<int> read) {
     if (read.length <= remaining) {
-      _data.setRange(position, position + read.length, read);
-      position += read.length;
+      _data.setRange(_position, _position + read.length, read);
+      _position += read.length;
     } else {
       _data.setRange(
-          position, position + remaining, read.sublist(0, remaining));
-      position += remaining;
+          _position, _position + remaining, read.sublist(0, remaining));
+      _position += remaining;
     }
   }
 
@@ -489,7 +497,7 @@ class LByteBuffer {
 
   void rewind() {
     _position = 0;
-    _mark = 0;
+    _mark = -1;
   }
 
   void put(LByteBuffer buffer) {
