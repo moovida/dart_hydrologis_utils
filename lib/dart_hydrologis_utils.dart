@@ -2,7 +2,6 @@ library dart_hydrologis_utils;
 
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:chunked_stream/chunked_stream.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:logger/logger.dart';
