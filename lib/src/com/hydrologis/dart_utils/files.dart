@@ -370,7 +370,10 @@ class LByteBuffer {
 
   final bool readOnly;
 
-  LByteBuffer.fromData(List data, {this.readOnly = false, doSigned = false}) {
+  bool doSigned;
+
+  LByteBuffer.fromData(List data,
+      {this.readOnly = false, this.doSigned = false}) {
     if (doSigned) {
       _data = Int8List.fromList(data);
     } else {
@@ -403,29 +406,31 @@ class LByteBuffer {
   }
 
   int getInt32() {
-    var ul = Uint8List.fromList(get(4));
+    var ul = doSigned ? Int8List.fromList(get(4)) : Uint8List.fromList(get(4));
     return ByteConversionUtilities.getInt32(ul, _endian);
   }
 
   void putInt32(int num) {
-    var bytesList = ByteConversionUtilities.bytesFromInt32(num, _endian);
+    var bytesList =
+        ByteConversionUtilities.bytesFromInt32(num, endian: _endian);
     _data.setRange(_position, _position + bytesList.length, bytesList);
     _position = _position + bytesList.length;
   }
 
   double getDouble64() {
-    var ul = Uint8List.fromList(get(8));
+    var ul = doSigned ? Int8List.fromList(get(8)) : Uint8List.fromList(get(8));
     return ByteConversionUtilities.getDouble64(ul, _endian);
   }
 
   void putDouble64(double num) {
-    var bytesList = ByteConversionUtilities.bytesFromDouble64(num, _endian);
+    var bytesList =
+        ByteConversionUtilities.bytesFromDouble64(num, endian: _endian);
     _data.setRange(_position, _position + bytesList.length, bytesList);
     _position = _position + bytesList.length;
   }
 
   double getDouble32() {
-    var ul = Uint8List.fromList(get(4));
+    var ul = doSigned ? Int8List.fromList(get(4)) : Uint8List.fromList(get(4));
     return ByteConversionUtilities.getDouble32(ul, _endian);
   }
 
@@ -567,12 +572,13 @@ class FileWriter {
   }
 
   Future<void> putInt32(int value, [Endian endian = Endian.big]) async {
-    var bytes = ByteConversionUtilities.bytesFromInt32(value, endian);
+    var bytes = ByteConversionUtilities.bytesFromInt32(value, endian: endian);
     await randomAccessFile.writeFrom(bytes);
   }
 
   Future<void> putDouble64(double value, [Endian endian = Endian.big]) async {
-    var bytes = ByteConversionUtilities.bytesFromDouble64(value, endian);
+    var bytes =
+        ByteConversionUtilities.bytesFromDouble64(value, endian: endian);
     await randomAccessFile.writeFrom(bytes);
   }
 }
