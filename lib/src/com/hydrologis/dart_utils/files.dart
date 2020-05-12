@@ -504,8 +504,10 @@ class LByteBuffer {
     _mark = -1;
   }
 
+  /// Put a [buffer] into this buffer, considering the current
+  /// position and remaining bytes.
   void put(LByteBuffer buffer) {
-    _data.setRange(0, buffer._data.length, buffer._data);
+    _data.setRange(0, buffer.remaining, buffer._data, buffer._position);
     position = buffer._data.length;
   }
 
