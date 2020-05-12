@@ -504,6 +504,30 @@ class LByteBuffer {
     _data.setRange(0, buffer._data.length, buffer._data);
     position = buffer._data.length;
   }
+
+  @override
+  String toString() {
+    var cols = 20;
+    var f = NumberFormat("###");
+
+    StringBuffer sb = StringBuffer();
+    for (var i = 0; i < _data.length; i++) {
+      sb.write("$i) ");
+      var start = i;
+      for (var j = start; j < start + cols && j < _data.length; j++, i++) {
+        var data = _data[i];
+        if (data == null) {
+          sb.write("***");
+        } else {
+          sb.write(f.format(data));
+        }
+        sb.write(" ");
+      }
+      sb.write("\n");
+    }
+
+    return sb.toString();
+  }
 }
 
 /// A writer class.

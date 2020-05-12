@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:test/test.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
@@ -27,6 +26,7 @@ void main() {
           r = await reader.readIntoBuffer(buffer);
         }
         buffer.flip();
+        print(buffer);
 
         for (var i = 0; i < chinShpBytes.length; i++) {
           var byte = buffer.getByte();
