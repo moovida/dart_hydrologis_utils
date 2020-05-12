@@ -300,12 +300,14 @@ class FileReaderRandom extends AFileReader {
 
   @override
   Future<int> readIntoBuffer(LByteBuffer buffer) async {
-    List<int> read = await channel.read(buffer.remaining);
-    buffer.set(read);
-    if (read == null || read.isEmpty) {
+    // List<int> read = [];
+    int read = await channel.readInto(
+        buffer._data, buffer.position, buffer.position + buffer.remaining);
+    // buffer.set(read);
+    if (read <= 0) {
       return -1;
     }
-    return read.length;
+    return read;
   }
 
   @override
