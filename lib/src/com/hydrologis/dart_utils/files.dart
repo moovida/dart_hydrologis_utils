@@ -369,8 +369,7 @@ class LByteBuffer {
   Endian _endian = Endian.big;
 
   final bool readOnly;
-
-  bool doSigned;
+  final bool doSigned;
 
   LByteBuffer.fromData(List data,
       {this.readOnly = false, this.doSigned = false}) {
@@ -382,7 +381,7 @@ class LByteBuffer {
     _limit = _data.length;
   }
 
-  LByteBuffer(int size, {this.readOnly = false, doSigned = false}) {
+  LByteBuffer(int size, {this.readOnly = false, this.doSigned = false}) {
     if (doSigned) {
       _data = Int8List(size);
     } else {
