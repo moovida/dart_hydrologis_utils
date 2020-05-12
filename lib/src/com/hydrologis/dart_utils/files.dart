@@ -513,16 +513,20 @@ class LByteBuffer {
     StringBuffer sb = StringBuffer();
     for (var i = 0; i < _data.length; i++) {
       sb.write("$i) ");
-      var start = i;
-      for (var j = start; j < start + cols && j < _data.length; j++, i++) {
-        var data = _data[i];
+      for (var j = 0; j < cols; j++) {
+        var data = _data[i++];
         if (data == null) {
           sb.write("***");
         } else {
           sb.write(f.format(data));
         }
         sb.write(" ");
+
+        if (i == _data.length) {
+          break;
+        }
       }
+      i--;
       sb.write("\n");
     }
 
