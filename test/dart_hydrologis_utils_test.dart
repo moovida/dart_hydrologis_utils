@@ -25,6 +25,39 @@ void main() {
       }
     });
   });
+  group('Charset tests', () {
+    test('russian utf8', () async {
+      await checkUtf8("russian", "На берегу пустынных волн");
+    });
+    test('milanese utf8', () async {
+      await checkUtf8(
+          "milanese", "Sôn bôn de magnà el véder, el me fa minga mal.");
+    });
+    test('turkish utf8', () async {
+      await checkUtf8("turkish", "جام ييه بلورم بڭا ضررى طوقونمز");
+    });
+    test('japanese utf8', () async {
+      await checkUtf8("japanese", "私はガラスを食べられます。それは私を傷つけません。");
+    });
+    test('korean utf8', () async {
+      await checkUtf8("korean", "나는 유리를 먹을 수 있어요. 그래도 아프지 않아요");
+    });
+    test('thai utf8', () async {
+      await checkUtf8("thai", "ฉันกินกระจกได้ แต่มันไม่ทำให้ฉันเจ็บ");
+    });
+    test('chinese utf8', () async {
+      await checkUtf8("chinese", "我能吞下玻璃而不伤身体。");
+    });
+  });
+}
+
+Future<void> checkUtf8(String testFile, String match) async {
+  var charsetFile = File('./test/files/charsets/$testFile');
+  List<int> bytes = FileUtilities.readFileBytes(charsetFile.path);
+
+  var charsetUtf8 = Charset();
+  var string = await charsetUtf8.decode(bytes);
+  expect(string, match);
 }
 
 var chinShpBytes = [

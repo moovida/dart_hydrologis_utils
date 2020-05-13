@@ -44,6 +44,10 @@ class FileUtilities {
     return File(filePath).readAsStringSync();
   }
 
+  static List<int> readFileBytes(String filePath) {
+    return File(filePath).readAsBytesSync();
+  }
+
   static List<String> readFileToList(String filePath) {
     var fileText = readFile(filePath);
     List<String> split = fileText.split('\n');
