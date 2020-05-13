@@ -5,3 +5,7 @@
 ## 0.2.0
 
 - added expandable charset utility with support for utf-8 and utf-16
+
+## 0.3.0
+
+- bugfixes
