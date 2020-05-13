@@ -26,6 +26,7 @@ void main() {
     });
   });
   group('Charset tests', () {
+    // test strings taken from; http://kermitproject.org/utf8.html
     test('russian utf8', () async {
       await checkUtf8("russian", "На берегу пустынных волн");
     });
