@@ -7,6 +7,8 @@ const UTF16 = "UTF-16";
 abstract class CharsetConverter {
   set charsetName(String charset);
 
+  String get charsetName;
+
   Future<String> decode(List<int> bytes);
 
   Future<List<int>> encode(String string);
@@ -37,6 +39,9 @@ class DefaultCharsetConverter extends CharsetConverter {
     return Future.value(StringUtilities.equalsIgnoreCase(charset, UTF8) ||
         StringUtilities.equalsIgnoreCase(charset, UTF16));
   }
+
+  @override
+  String get charsetName => do16 ? UTF16 : UTF8;
 
   @override
   set charsetName(String charset) {
@@ -74,6 +79,8 @@ class Charset {
   Future<void> setCharsetEncoding(String charsetName) async {
     _charsetConverter.charsetName = charsetName;
   }
+
+  String get charsetEncoding => _charsetConverter.charsetName;
 
   /// Get the list of supported charsets
   Future<List<String>> getAvailableCharsets() async {
