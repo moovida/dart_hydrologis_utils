@@ -5,6 +5,31 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 
 void main() {
   group('SLD tests', () {
+    test('points_simple_circle_with_label', () async {
+      var sldFile = File('./test/files/sld/points_simple_circle_with_label.sld');
+      var sldObject = SldObject.fromFile(sldFile);
+      sldObject.parse();
+      var featureTypeStyles = sldObject.featureTypeStyles;
+      expect(featureTypeStyles.length, 1);
+
+      var rules = featureTypeStyles[0].rules;
+      expect(rules.length, 1);
+
+      var pointSymbolizers = rules.first.pointSymbolizers;
+      expect(pointSymbolizers.length, 1);
+      expect(pointSymbolizers[0].style.markerName, "Circle");
+      expect(pointSymbolizers[0].style.markerSize, 15);
+      expect(pointSymbolizers[0].style.strokeColorHex, "#00F900");
+      expect(pointSymbolizers[0].style.strokeWidth, 2.0);
+      expect(pointSymbolizers[0].style.strokeOpacity, 0.5);
+      expect(pointSymbolizers[0].style.fillColorHex, "#ff0000");
+
+      var textSymbolizers = rules.first.textSymbolizers;
+      expect(textSymbolizers.length, 1);
+      expect(textSymbolizers[0].labelName, "NAME");
+      expect(textSymbolizers[0].size, 12.0);
+      expect(textSymbolizers[0].textColor, "#000000");
+    });
     test('lines_double_rule_like_road', () async {
       var sldFile = File('./test/files/sld/lines_double_rule_like_road.sld');
       var sldObject = SldObject.fromFile(sldFile);
@@ -16,15 +41,15 @@ void main() {
       expect(rules.length, 1);
       var lineSymbolizers = rules.first.lineSymbolizers;
       expect(lineSymbolizers.length, 1);
-      expect(lineSymbolizers[0].colorHex, "#000000");
-      expect(lineSymbolizers[0].width, 9.0);
+      expect(lineSymbolizers[0].style.strokeColorHex, "#000000");
+      expect(lineSymbolizers[0].style.strokeWidth, 9.0);
 
       rules = featureTypeStyles[1].rules;
       expect(rules.length, 1);
       lineSymbolizers = rules.first.lineSymbolizers;
       expect(lineSymbolizers.length, 1);
-      expect(lineSymbolizers[0].colorHex, "#8c8c8c");
-      expect(lineSymbolizers[0].width, 5.0);
+      expect(lineSymbolizers[0].style.strokeColorHex, "#8c8c8c");
+      expect(lineSymbolizers[0].style.strokeWidth, 5.0);
     });
     test('lines_simple_with_labels', () async {
       var sldFile = File('./test/files/sld/lines_simple_with_labels.sld');
@@ -38,8 +63,8 @@ void main() {
 
       var lineSymbolizers = rules.first.lineSymbolizers;
       expect(lineSymbolizers.length, 1);
-      expect(lineSymbolizers[0].colorHex, "#0432FF");
-      expect(lineSymbolizers[0].width, 2.0);
+      expect(lineSymbolizers[0].style.strokeColorHex, "#0432FF");
+      expect(lineSymbolizers[0].style.strokeWidth, 2.0);
 
       var textSymbolizers = rules.first.textSymbolizers;
       expect(textSymbolizers.length, 1);
@@ -48,6 +73,58 @@ void main() {
       expect(textSymbolizers[0].textColor, "#0432FF");
       expect(textSymbolizers[0].haloColor, "#FEFFFF");
       expect(textSymbolizers[0].haloSize, 1);
+    });
+    test('polygon_simple_with_labels', () async {
+      var sldFile = File('./test/files/sld/polygon_simple_with_labels.sld');
+      var sldObject = SldObject.fromFile(sldFile);
+      sldObject.parse();
+      var featureTypeStyles = sldObject.featureTypeStyles;
+      expect(featureTypeStyles.length, 1);
+
+      var rules = featureTypeStyles[0].rules;
+      expect(rules.length, 1);
+
+      var lineSymbolizers = rules.first.lineSymbolizers;
+      expect(lineSymbolizers.length, 0);
+
+      var polygonSymbolizers = rules.first.polygonSymbolizers;
+      expect(polygonSymbolizers.length, 1);
+
+      expect(polygonSymbolizers[0].style.strokeColorHex, "#000000");
+      expect(polygonSymbolizers[0].style.strokeWidth, 2.0);
+      expect(polygonSymbolizers[0].style.strokeOpacity, 0.5);
+      expect(polygonSymbolizers[0].style.fillColorHex, "#ff0000");
+      expect(polygonSymbolizers[0].style.fillOpacity, 0.5);
+
+      var textSymbolizers = rules.first.textSymbolizers;
+      expect(textSymbolizers.length, 1);
+      expect(textSymbolizers[0].labelName, "name");
+      expect(textSymbolizers[0].size, 12.0);
+      expect(textSymbolizers[0].textColor, "#000000");
+    });
+    test('polygon_simple_with_labels_qgis', () async {
+      var sldFile = File('./test/files/sld/polygon_simple_with_labels_qgis.sld');
+      var sldObject = SldObject.fromFile(sldFile);
+      sldObject.parse();
+
+      var featureTypeStyles = sldObject.featureTypeStyles;
+      expect(featureTypeStyles.length, 1);
+
+      var rules = featureTypeStyles[0].rules;
+      expect(rules.length, 2);
+
+      var polygonSymbolizers = rules.first.polygonSymbolizers;
+      expect(polygonSymbolizers.length, 1);
+
+      expect(polygonSymbolizers[0].style.strokeColorHex, "#232323");
+      expect(polygonSymbolizers[0].style.strokeWidth, 2.0);
+      expect(polygonSymbolizers[0].style.fillColorHex, "#729b6f");
+
+      var textSymbolizers = rules.last.textSymbolizers;
+      expect(textSymbolizers.length, 1);
+      expect(textSymbolizers[0].labelName, "NAME");
+      expect(textSymbolizers[0].size, 25.0);
+      expect(textSymbolizers[0].textColor, "#000000");
     });
   });
 

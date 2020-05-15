@@ -21,21 +21,30 @@ const RULE = "Rule";
 const FILTER = "Filter";
 
 const LINESYMBOLIZER = "LineSymbolizer";
+const POINTSYMBOLIZER = "PointSymbolizer";
+const POLYGONSYMBOLIZER = "PolygonSymbolizer";
 const TEXTSYMBOLIZER = "TextSymbolizer";
 
 const STROKE = "Stroke";
 const FILL = "Fill";
 const LABEL = "Label";
+const SIZE = "Size";
 const FONT = "Font";
 const HALO = "Halo";
 const RADIUS = "Radius";
+const GRAPHIC = "Graphic";
+const MARK = "Mark";
+const WELLKNOWNNAME = "WellKnownName";
 const CSS_PARAMETER = "CssParameter";
 const SVG_PARAMETER = "SvgParameter";
 const PROPERTY_NAME = "PropertyName";
 
 const ATTRIBUTE_NAME = "name";
 const ATTRIBUTE_STROKE = "stroke";
+const ATTRIBUTE_FILL = "fill";
+const ATTRIBUTE_FILL_OPACITY = "fill-opacity";
 const ATTRIBUTE_STROKE_WIDTH = "stroke-width";
+const ATTRIBUTE_STROKE_OPACITY = "stroke-opacity";
 const ATTRIBUTE_FONT_SIZE = "font-size";
 
 const DEF_NSP = '*';
@@ -73,27 +82,40 @@ class FeatureTypeStyle {
 
   FeatureTypeStyle(xml.XmlElement xmlElement) {
     var allRules = xmlElement.findAllElements(RULE, namespace: DEF_NSP);
-    if (allRules.length == 1) {
-      Rule rule = Rule(allRules.first);
+    for (var r in allRules) {
+      Rule rule = Rule(r);
       rules.add(rule);
-    } else if (allRules.length > 1) {
-      // thematic?
-      var filterElements =
-          allRules.first.findElements(FILTER, namespace: DEF_NSP);
     }
+    // thematic?
+    // var filterElements =
+    //     allRules.first.findElements(FILTER, namespace: DEF_NSP);
   }
 }
 
 class Rule {
+  List<PointSymbolizer> pointSymbolizers = [];
   List<LineSymbolizer> lineSymbolizers = [];
+  List<PolygonSymbolizer> polygonSymbolizers = [];
   List<TextSymbolizer> textSymbolizers = [];
 
   Rule(xml.XmlElement xmlElement) {
+    var pointSymbolizersList =
+        xmlElement.findElements(POINTSYMBOLIZER, namespace: DEF_NSP);
+    for (var pointSymbolizer in pointSymbolizersList) {
+      PointSymbolizer ps = PointSymbolizer(pointSymbolizer);
+      pointSymbolizers.add(ps);
+    }
     var lineSymbolizersList =
         xmlElement.findElements(LINESYMBOLIZER, namespace: DEF_NSP);
     for (var lineSymbolizer in lineSymbolizersList) {
       LineSymbolizer ls = LineSymbolizer(lineSymbolizer);
       lineSymbolizers.add(ls);
+    }
+    var polygonSymbolizersList =
+        xmlElement.findElements(POLYGONSYMBOLIZER, namespace: DEF_NSP);
+    for (var polygonSymbolizer in polygonSymbolizersList) {
+      PolygonSymbolizer ls = PolygonSymbolizer(polygonSymbolizer);
+      polygonSymbolizers.add(ls);
     }
     var textSymbolizersList =
         xmlElement.findElements(TEXTSYMBOLIZER, namespace: DEF_NSP);
@@ -104,28 +126,70 @@ class Rule {
   }
 }
 
-class LineSymbolizer {
-  String colorHex = "#000000";
-  double width = 1.0;
+/// Default point style class.
+class PointStyle {
+  String markerName = "Circle";
+  double markerSize = 5;
+  String fillColorHex = "#000000";
+  double fillOpacity = 1.0;
+  String strokeColorHex = "#000000";
+  double strokeWidth = 1.0;
+  double strokeOpacity = 1.0;
+}
 
-  LineSymbolizer(xml.XmlElement xmlElement) {
-    var strokes = xmlElement.findElements(STROKE, namespace: DEF_NSP);
-    if (strokes.isNotEmpty) {
-      var stroke = strokes.first;
-      var parameters = _getParamters(stroke);
-      if (parameters.isNotEmpty) {
-        for (var parameter in parameters) {
-          var attrName = parameter.getAttribute(ATTRIBUTE_NAME);
+class PointSymbolizer {
+  PointStyle style = PointStyle();
 
-          if (StringUtilities.equalsIgnoreCase(attrName, ATTRIBUTE_STROKE)) {
-            colorHex = parameter.text;
-          } else if (StringUtilities.equalsIgnoreCase(
-              attrName, ATTRIBUTE_STROKE_WIDTH)) {
-            width = double.parse(parameter.text);
-          }
+  PointSymbolizer(xml.XmlElement xmlElement) {
+    var graphicElem = _findSingleElement(xmlElement, GRAPHIC);
+    if (graphicElem != null) {
+      var sizeElem = _findSingleElement(graphicElem, SIZE);
+      if (sizeElem != null) {
+        style.markerSize = double.parse(sizeElem.text);
+      }
+      var markElem = _findSingleElement(graphicElem, MARK);
+      if (markElem != null) {
+        var wkNameElem = _findSingleElement(markElem, WELLKNOWNNAME);
+        if (wkNameElem != null) {
+          style.markerName = wkNameElem.text;
         }
+        _getFill(markElem, style);
+        _getStroke(markElem, style);
       }
     }
+  }
+}
+
+/// Default polygon style class.
+class PolygonStyle {
+  String fillColorHex = "#000000";
+  double fillOpacity = 1.0;
+  String strokeColorHex = "#000000";
+  double strokeWidth = 1.0;
+  double strokeOpacity = 1.0;
+}
+
+class PolygonSymbolizer {
+  PolygonStyle style = PolygonStyle();
+
+  PolygonSymbolizer(xml.XmlElement xmlElement) {
+    _getStroke(xmlElement, style);
+    _getFill(xmlElement, style);
+  }
+}
+
+/// Default line style class
+class LineStyle {
+  String strokeColorHex = "#000000";
+  double strokeWidth = 1.0;
+  double strokeOpacity = 1.0;
+}
+
+class LineSymbolizer {
+  LineStyle style = LineStyle();
+
+  LineSymbolizer(xml.XmlElement xmlElement) {
+    _getStroke(xmlElement, style);
   }
 }
 
@@ -158,7 +222,9 @@ class TextSymbolizer {
       }
     }
 
-    textColor = _getFill(xmlElement);
+    PolygonStyle dummyStyle = PolygonStyle();
+    _getFill(xmlElement, dummyStyle);
+    textColor = dummyStyle.fillColorHex;
 
     var halo = _findSingleElement(xmlElement, HALO);
     if (halo != null) {
@@ -167,13 +233,37 @@ class TextSymbolizer {
         haloSize = double.parse(radius.text);
       }
 
-      haloColor = _getFill(halo);
+      PolygonStyle dummyStyle = PolygonStyle();
+      _getFill(halo, dummyStyle);
+      haloColor = dummyStyle.fillColorHex;
     }
   }
 }
 
 /// COMMON METHODS
 ///
+void _getStroke(xml.XmlElement xmlElement, dynamic styleObject) {
+  var strokes = xmlElement.findElements(STROKE, namespace: DEF_NSP);
+  if (strokes.isNotEmpty) {
+    var stroke = strokes.first;
+    var parameters = _getParamters(stroke);
+    if (parameters.isNotEmpty) {
+      for (var parameter in parameters) {
+        var attrName = parameter.getAttribute(ATTRIBUTE_NAME);
+
+        if (StringUtilities.equalsIgnoreCase(attrName, ATTRIBUTE_STROKE)) {
+          styleObject.strokeColorHex = parameter.text;
+        } else if (StringUtilities.equalsIgnoreCase(
+            attrName, ATTRIBUTE_STROKE_WIDTH)) {
+          styleObject.strokeWidth = double.parse(parameter.text);
+        } else if (StringUtilities.equalsIgnoreCase(
+            attrName, ATTRIBUTE_STROKE_OPACITY)) {
+          styleObject.strokeOpacity = double.parse(parameter.text);
+        }
+      }
+    }
+  }
+}
 
 Iterable<xml.XmlElement> _getParamters(xml.XmlElement element) {
   var parameters = element.findElements(CSS_PARAMETER, namespace: DEF_NSP);
@@ -191,17 +281,19 @@ xml.XmlElement _findSingleElement(xml.XmlElement element, String tag) {
   return null;
 }
 
-String _getFill(xml.XmlElement xmlElement) {
+void _getFill(xml.XmlElement xmlElement, dynamic styleObject) {
   var fill = _findSingleElement(xmlElement, FILL);
   if (fill != null) {
     var paramters = _getParamters(fill);
     for (var parameter in paramters) {
       var nameAttr = parameter.getAttribute(ATTRIBUTE_NAME);
       if (nameAttr != null &&
-          StringUtilities.equalsIgnoreCase(nameAttr, "fill")) {
-        return parameter.text;
+          StringUtilities.equalsIgnoreCase(nameAttr, ATTRIBUTE_FILL)) {
+        styleObject.fillColorHex = parameter.text;
+      } else if (nameAttr != null &&
+          StringUtilities.equalsIgnoreCase(nameAttr, ATTRIBUTE_FILL_OPACITY)) {
+        styleObject.fillOpacity = double.parse(parameter.text);
       }
     }
   }
-  return null;
 }
