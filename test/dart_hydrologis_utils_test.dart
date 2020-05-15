@@ -17,9 +17,16 @@ void main() {
       expect(lineSymbolizers[0].colorHex, "#0432FF");
       expect(lineSymbolizers[0].width, 2.0);
 
-      
+      var textSymbolizers = rules.first.textSymbolizers;
+      expect(textSymbolizers.length, 1);
+      expect(textSymbolizers[0].labelName, "name");
+      expect(textSymbolizers[0].size, 12.0);
+      expect(textSymbolizers[0].textColor, "#0432FF");
+      expect(textSymbolizers[0].haloColor, "#FEFFFF");
+      expect(textSymbolizers[0].haloSize, 1);
     });
   });
+
   group('Files tests', () {
     test('bytes check', () async {
       var chineseShp = File('./test/files/chinese_poly.shp');
