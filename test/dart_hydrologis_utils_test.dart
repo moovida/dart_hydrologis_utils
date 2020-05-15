@@ -5,11 +5,35 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 
 void main() {
   group('SLD tests', () {
-    test('simple line with label', () async {
+    test('lines_double_rule_like_road', () async {
+      var sldFile = File('./test/files/sld/lines_double_rule_like_road.sld');
+      var sldObject = SldObject.fromFile(sldFile);
+      sldObject.parse();
+      var featureTypeStyles = sldObject.featureTypeStyles;
+      expect(featureTypeStyles.length, 2);
+
+      var rules = featureTypeStyles[0].rules;
+      expect(rules.length, 1);
+      var lineSymbolizers = rules.first.lineSymbolizers;
+      expect(lineSymbolizers.length, 1);
+      expect(lineSymbolizers[0].colorHex, "#000000");
+      expect(lineSymbolizers[0].width, 9.0);
+
+      rules = featureTypeStyles[1].rules;
+      expect(rules.length, 1);
+      lineSymbolizers = rules.first.lineSymbolizers;
+      expect(lineSymbolizers.length, 1);
+      expect(lineSymbolizers[0].colorHex, "#8c8c8c");
+      expect(lineSymbolizers[0].width, 5.0);
+    });
+    test('lines_simple_with_labels', () async {
       var sldFile = File('./test/files/sld/lines_simple_with_labels.sld');
       var sldObject = SldObject.fromFile(sldFile);
       sldObject.parse();
-      var rules = sldObject.rules;
+      var featureTypeStyles = sldObject.featureTypeStyles;
+      expect(featureTypeStyles.length, 1);
+
+      var rules = featureTypeStyles[0].rules;
       expect(rules.length, 1);
 
       var lineSymbolizers = rules.first.lineSymbolizers;

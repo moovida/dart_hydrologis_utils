@@ -33,14 +33,17 @@ const CSS_PARAMETER = "CssParameter";
 const SVG_PARAMETER = "SvgParameter";
 const PROPERTY_NAME = "PropertyName";
 
-const NAME_ATTRIBUTE = "name";
+const ATTRIBUTE_NAME = "name";
+const ATTRIBUTE_STROKE = "stroke";
+const ATTRIBUTE_STROKE_WIDTH = "stroke-width";
+const ATTRIBUTE_FONT_SIZE = "font-size";
 
 const DEF_NSP = '*';
 
 class SldObject {
-  List<Rule> rules = [];
-
   xml.XmlDocument document;
+
+  List<FeatureTypeStyle> featureTypeStyles = [];
 
   SldObject(this.document);
 
@@ -57,19 +60,26 @@ class SldObject {
       var featureTypeStyleList =
           document.findAllElements(FEATURETYPESTYLE, namespace: DEF_NSP);
       // we read just the first
-      if (featureTypeStyleList.isNotEmpty) {
-        var featureTypeStyle = featureTypeStyleList.toList()[0];
-        var allRules =
-            featureTypeStyle.findAllElements(RULE, namespace: DEF_NSP);
-        if (allRules.length == 1) {
-          Rule rule = Rule(allRules.first);
-          rules.add(rule);
-        } else if (allRules.length > 1) {
-          // thematic?
-          var filterElements =
-              allRules.first.findElements(FILTER, namespace: DEF_NSP);
-        }
+      for (var featureTypeStyle in featureTypeStyleList) {
+        FeatureTypeStyle fts = FeatureTypeStyle(featureTypeStyle);
+        featureTypeStyles.add(fts);
       }
+    }
+  }
+}
+
+class FeatureTypeStyle {
+  List<Rule> rules = [];
+
+  FeatureTypeStyle(xml.XmlElement xmlElement) {
+    var allRules = xmlElement.findAllElements(RULE, namespace: DEF_NSP);
+    if (allRules.length == 1) {
+      Rule rule = Rule(allRules.first);
+      rules.add(rule);
+    } else if (allRules.length > 1) {
+      // thematic?
+      var filterElements =
+          allRules.first.findElements(FILTER, namespace: DEF_NSP);
     }
   }
 }
@@ -95,7 +105,7 @@ class Rule {
 }
 
 class LineSymbolizer {
-  String colorHex = "#FF0000";
+  String colorHex = "#000000";
   double width = 1.0;
 
   LineSymbolizer(xml.XmlElement xmlElement) {
@@ -105,11 +115,12 @@ class LineSymbolizer {
       var parameters = _getParamters(stroke);
       if (parameters.isNotEmpty) {
         for (var parameter in parameters) {
-          var attrName = parameter.getAttribute(NAME_ATTRIBUTE);
-          if (StringUtilities.equalsIgnoreCase(attrName, "stroke")) {
+          var attrName = parameter.getAttribute(ATTRIBUTE_NAME);
+
+          if (StringUtilities.equalsIgnoreCase(attrName, ATTRIBUTE_STROKE)) {
             colorHex = parameter.text;
           } else if (StringUtilities.equalsIgnoreCase(
-              attrName, "stroke-width")) {
+              attrName, ATTRIBUTE_STROKE_WIDTH)) {
             width = double.parse(parameter.text);
           }
         }
@@ -138,9 +149,10 @@ class TextSymbolizer {
     if (font != null) {
       var paramters = _getParamters(font);
       for (var parameter in paramters) {
-        var nameAttr = parameter.getAttribute(NAME_ATTRIBUTE);
+        var nameAttr = parameter.getAttribute(ATTRIBUTE_NAME);
+
         if (nameAttr != null &&
-            StringUtilities.equalsIgnoreCase(nameAttr, "font-size")) {
+            StringUtilities.equalsIgnoreCase(nameAttr, ATTRIBUTE_FONT_SIZE)) {
           size = double.parse(parameter.text);
         }
       }
@@ -184,7 +196,7 @@ String _getFill(xml.XmlElement xmlElement) {
   if (fill != null) {
     var paramters = _getParamters(fill);
     for (var parameter in paramters) {
-      var nameAttr = parameter.getAttribute(NAME_ATTRIBUTE);
+      var nameAttr = parameter.getAttribute(ATTRIBUTE_NAME);
       if (nameAttr != null &&
           StringUtilities.equalsIgnoreCase(nameAttr, "fill")) {
         return parameter.text;
