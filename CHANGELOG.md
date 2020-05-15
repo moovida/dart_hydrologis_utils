@@ -9,3 +9,7 @@
 ## 0.3.0
 
 - bugfixes
+
+### 0.4.0
+
+- support for simple SLD parsing
