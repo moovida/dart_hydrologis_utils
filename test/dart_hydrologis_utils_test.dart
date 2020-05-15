@@ -4,6 +4,22 @@ import 'package:test/test.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 
 void main() {
+  group('SLD tests', () {
+    test('simple line with label', () async {
+      var sldFile = File('./test/files/sld/lines_simple_with_labels.sld');
+      var sldObject = SldObject.fromFile(sldFile);
+      sldObject.parse();
+      var rules = sldObject.rules;
+      expect(rules.length, 1);
+
+      var lineSymbolizers = rules.first.lineSymbolizers;
+      expect(lineSymbolizers.length, 1);
+      expect(lineSymbolizers[0].colorHex, "#0432FF");
+      expect(lineSymbolizers[0].width, 2.0);
+
+      
+    });
+  });
   group('Files tests', () {
     test('bytes check', () async {
       var chineseShp = File('./test/files/chinese_poly.shp');

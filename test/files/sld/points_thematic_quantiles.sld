@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sld:StyledLayerDescriptor xmlns="http://www.opengis.net/sld" 
+    xmlns:sld="http://www.opengis.net/sld" 
+    xmlns:gml="http://www.opengis.net/gml" 
+    xmlns:ogc="http://www.opengis.net/ogc" version="1.0.0">
+    <sld:UserLayer>
+        <sld:LayerFeatureConstraints>
+            <sld:FeatureTypeConstraint/>
+        </sld:LayerFeatureConstraints>
+        <sld:UserStyle>
+            <sld:Name>places</sld:Name>
+            <sld:FeatureTypeStyle>
+                <sld:Name>group0</sld:Name>
+                <sld:FeatureTypeName>Feature</sld:FeatureTypeName>
+                <sld:SemanticTypeIdentifier>generic:geometry</sld:SemanticTypeIdentifier>
+                <sld:SemanticTypeIdentifier>colorbrewer:quantile:dark2</sld:SemanticTypeIdentifier>
+                <sld:Rule>
+                    <sld:Name>rule01</sld:Name>
+                    <sld:Title>832..69060</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>POP_MAX</ogc:PropertyName>
+                                <ogc:Literal>832</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThan>
+                                <ogc:PropertyName>POP_MAX</ogc:PropertyName>
+                                <ogc:Literal>69060</ogc:Literal>
+                            </ogc:PropertyIsLessThan>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PointSymbolizer>
+                        <sld:Graphic>
+                            <sld:Mark>
+                                <sld:Fill>
+                                    <sld:CssParameter name="fill">#1B9E77</sld:CssParameter>
+                                    <sld:CssParameter name="fill-opacity">0.5</sld:CssParameter>
+                                </sld:Fill>
+                                <sld:Stroke/>
+                            </sld:Mark>
+                        </sld:Graphic>
+                    </sld:PointSymbolizer>
+                </sld:Rule>
+                <sld:Rule>
+                    <sld:Name>rule02</sld:Name>
+                    <sld:Title>69060..120729</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>POP_MAX</ogc:PropertyName>
+                                <ogc:Literal>69060</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThan>
+                                <ogc:PropertyName>POP_MAX</ogc:PropertyName>
+                                <ogc:Literal>120729</ogc:Literal>
+                            </ogc:PropertyIsLessThan>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PointSymbolizer>
+                        <sld:Graphic>
+                            <sld:Mark>
+                                <sld:Fill>
+                                    <sld:CssParameter name="fill">#D95F02</sld:CssParameter>
+                                    <sld:CssParameter name="fill-opacity">0.5</sld:CssParameter>
+                                </sld:Fill>
+                                <sld:Stroke/>
+                            </sld:Mark>
+                        </sld:Graphic>
+                    </sld:PointSymbolizer>
+                </sld:Rule>
+                <sld:Rule>
+                    <sld:Name>rule03</sld:Name>
+                    <sld:Title>120729..200000</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>POP_MAX</ogc:PropertyName>
+                                <ogc:Literal>120729</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThan>
+                                <ogc:PropertyName>POP_MAX</ogc:PropertyName>
+                                <ogc:Literal>200000</ogc:Literal>
+                            </ogc:PropertyIsLessThan>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PointSymbolizer>
+                        <sld:Graphic>
+                            <sld:Mark>
+                                <sld:Fill>
+                                    <sld:CssParameter name="fill">#7570B3</sld:CssParameter>
+                                    <sld:CssParameter name="fill-opacity">0.5</sld:CssParameter>
+                                </sld:Fill>
+                                <sld:Stroke/>
+                            </sld:Mark>
+                        </sld:Graphic>
+                    </sld:PointSymbolizer>
+                </sld:Rule>
+                <sld:Rule>
+                    <sld:Name>rule04</sld:Name>
+                    <sld:Title>200000..488172</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>POP_MAX</ogc:PropertyName>
+                                <ogc:Literal>200000</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThan>
+                                <ogc:PropertyName>POP_MAX</ogc:PropertyName>
+                                <ogc:Literal>488172</ogc:Literal>
+                            </ogc:PropertyIsLessThan>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PointSymbolizer>
+                        <sld:Graphic>
+                            <sld:Mark>
+                                <sld:Fill>
+                                    <sld:CssParameter name="fill">#E7298A</sld:CssParameter>
+                                    <sld:CssParameter name="fill-opacity">0.5</sld:CssParameter>
+                                </sld:Fill>
+                                <sld:Stroke/>
+                            </sld:Mark>
+                        </sld:Graphic>
+                    </sld:PointSymbolizer>
+                </sld:Rule>
+                <sld:Rule>
+                    <sld:Name>rule05</sld:Name>
+                    <sld:Title>488172..3339000</sld:Title>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsGreaterThanOrEqualTo>
+                                <ogc:PropertyName>POP_MAX</ogc:PropertyName>
+                                <ogc:Literal>488172</ogc:Literal>
+                            </ogc:PropertyIsGreaterThanOrEqualTo>
+                            <ogc:PropertyIsLessThanOrEqualTo>
+                                <ogc:PropertyName>POP_MAX</ogc:PropertyName>
+                                <ogc:Literal>3339000</ogc:Literal>
+                            </ogc:PropertyIsLessThanOrEqualTo>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <sld:PointSymbolizer>
+                        <sld:Graphic>
+                            <sld:Mark>
+                                <sld:Fill>
+                                    <sld:CssParameter name="fill">#66A61E</sld:CssParameter>
+                                    <sld:CssParameter name="fill-opacity">0.5</sld:CssParameter>
+                                </sld:Fill>
+                                <sld:Stroke/>
+                            </sld:Mark>
+                        </sld:Graphic>
+                    </sld:PointSymbolizer>
+                </sld:Rule>
+            </sld:FeatureTypeStyle>
+        </sld:UserStyle>
+    </sld:UserLayer>
+</sld:StyledLayerDescriptor>
+

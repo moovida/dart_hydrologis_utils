@@ -19,6 +19,9 @@ dependencies:
   image: ^2.1.12
   path: ^1.7.0
 
+  # MIT
+  xml: ^3.7.0
+
 
 
 dev_dependencies:

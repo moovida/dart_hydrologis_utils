@@ -7,6 +7,7 @@ import 'package:path/path.dart';
 import 'package:logger/logger.dart';
 import 'package:image/image.dart' as img;
 import 'dart:convert' show utf8;
+import 'package:xml/xml.dart' as xml;
 
 
 part 'src/com/hydrologis/dart_utils/files.dart';
@@ -17,4 +18,5 @@ part 'src/com/hydrologis/dart_utils/times.dart';
 part 'src/com/hydrologis/dart_utils/images.dart';
 part 'src/com/hydrologis/dart_utils/strings.dart';
 part 'src/com/hydrologis/dart_utils/charset.dart';
+part 'src/com/hydrologis/dart_utils/sld.dart';
 
