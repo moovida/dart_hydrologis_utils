@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
-import 'package:logger/logger.dart';
 import 'package:image/image.dart' as img;
 import 'dart:convert' show utf8;
 import 'package:xml/xml.dart' as xml;

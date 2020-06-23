@@ -30,7 +30,6 @@ class NetworkUtilities {
 /// A simple websocket service client class
 ///
 abstract class HyServerSocketService {
-  Logger log = Logger();
   final bool _isConnected = false;
 
   WebSocket webSocket;
@@ -47,9 +46,9 @@ abstract class HyServerSocketService {
 
   void checkConnection() {
     if (!_isConnected) {
-      log.i("Connecting to socket service.");
+      print("Connecting to socket service.");
       connect();
-      log.i("Connected to socket service: $_isConnected");
+      print("Connected to socket service: $_isConnected");
     }
   }
 

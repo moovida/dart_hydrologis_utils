@@ -9,8 +9,6 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  # MIT
-  logger: ^0.8.3
   # BSD
   # timezone: ^0.5.7
   # BSD
