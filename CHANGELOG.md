@@ -1,15 +1,20 @@
-## 0.1.0
+## 0.4.1
 
-- Initial version, utils for files, bytes and neat stuff
+- removed logger 
 
-## 0.2.0
+## 0.4.0
 
-- added expandable charset utility with support for utf-8 and utf-16
+- support for simple SLD parsing
 
 ## 0.3.0
 
 - bugfixes
 
-### 0.4.0
+## 0.2.0
 
-- support for simple SLD parsing
+- added expandable charset utility with support for utf-8 and utf-16
+
+## 0.1.0
+
+- Initial version, utils for files, bytes and neat stuff
+
