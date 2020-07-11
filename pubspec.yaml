@@ -17,7 +17,7 @@ dependencies:
   path: ^1.7.0
 
   # MIT
-  xml: ^3.7.0
+  xml: ^4.1.0
 
 
 
