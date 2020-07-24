@@ -210,7 +210,6 @@ void main() {
           .addLineSymbolizer(lineStyle1)
           .addTextSymbolizer(textStyle1);
       var sldXml = builder.build();
-      print(sldXml);
 
       var parser2 = SldObjectParser.fromString(sldXml);
       parser2.parse();
@@ -237,7 +236,6 @@ void main() {
           .addPolygonSymbolizer(polygonStyle1)
           .addTextSymbolizer(textStyle1);
       var sldXml = builder.build();
-      print(sldXml);
 
       var parser2 = SldObjectParser.fromString(sldXml);
       parser2.parse();
@@ -247,6 +245,35 @@ void main() {
       var textStyle2 = parser2
           .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
       expect(textStyle1 == textStyle2, true);
+    });
+    test('lines_double_rule_like_road', () async {
+      var sldFile = File('./test/files/sld/lines_double_rule_like_road.sld');
+      var parser1 = SldObjectParser.fromFile(sldFile);
+      parser1.parse();
+      var lineStyle11 =
+          parser1.featureTypeStyles[0].rules.first.lineSymbolizers.first.style;
+      var lineStyle12 =
+          parser1.featureTypeStyles[1].rules.first.lineSymbolizers.first.style;
+
+      SldObjectBuilder builder = SldObjectBuilder("test");
+      builder
+          .addFeatureTypeStyle('line')
+          .addRule("line")
+          .addLineSymbolizer(lineStyle11)
+          .addFeatureTypeStyle('black line')
+          .addRule("black line")
+          .addLineSymbolizer(lineStyle12);
+      var sldXml = builder.build();
+
+      var parser2 = SldObjectParser.fromString(sldXml);
+      parser2.parse();
+      var lineStyle21 =
+          parser2.featureTypeStyles[0].rules.first.lineSymbolizers.first.style;
+      var lineStyle22 =
+          parser2.featureTypeStyles[1].rules.first.lineSymbolizers.first.style;
+
+      expect(lineStyle11 == lineStyle21, true);
+      expect(lineStyle12 == lineStyle22, true);
     });
   });
 

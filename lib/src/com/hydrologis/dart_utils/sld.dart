@@ -68,6 +68,7 @@ class SldObjectBuilder {
   }
 
   SldObjectBuilder addFeatureTypeStyle(String ftsName) {
+    commitRule();
     commitFeatureTypeStyle();
     xml.XmlBuilder builder = xml.XmlBuilder();
     builder.namespace(uriSld, SLD_NSP);
