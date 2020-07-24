@@ -41,7 +41,7 @@ class LineStyle {
 
   @override
   bool operator ==(Object other) =>
-      other is PointStyle &&
+      other is LineStyle &&
       other.strokeColorHex == strokeColorHex &&
       other.strokeWidth == strokeWidth &&
       other.strokeOpacity == strokeOpacity;
@@ -61,7 +61,7 @@ class PolygonStyle {
 
   @override
   bool operator ==(Object other) =>
-      other is PointStyle &&
+      other is PolygonStyle &&
       other.fillColorHex == fillColorHex &&
       other.fillOpacity == fillOpacity &&
       other.strokeColorHex == strokeColorHex &&
@@ -71,4 +71,26 @@ class PolygonStyle {
   @override
   int get hashCode => HashUtilities.hashObjects(
       [fillColorHex, fillOpacity, strokeColorHex, strokeWidth, strokeOpacity]);
+}
+
+/// Default text style class.
+class TextStyle {
+  String labelName = " - nv - ";
+  String textColor = "#000000";
+  double size = 12;
+  double haloSize = 1.0;
+  String haloColor = "#FFFFFF";
+
+  @override
+  bool operator ==(Object other) =>
+      other is TextStyle &&
+      other.labelName == labelName &&
+      other.textColor == textColor &&
+      other.size == size &&
+      other.haloSize == haloSize &&
+      other.haloColor == haloColor;
+
+  @override
+  int get hashCode => HashUtilities.hashObjects(
+      [labelName, textColor, size, haloSize, haloColor]);
 }

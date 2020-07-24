@@ -27,9 +27,9 @@ void main() {
 
       var textSymbolizers = rules.first.textSymbolizers;
       expect(textSymbolizers.length, 1);
-      expect(textSymbolizers[0].labelName, "NAME");
-      expect(textSymbolizers[0].size, 12.0);
-      expect(textSymbolizers[0].textColor, "#000000");
+      expect(textSymbolizers[0].style.labelName, "NAME");
+      expect(textSymbolizers[0].style.size, 12.0);
+      expect(textSymbolizers[0].style.textColor, "#000000");
     });
     test('lines_double_rule_like_road', () async {
       var sldFile = File('./test/files/sld/lines_double_rule_like_road.sld');
@@ -69,11 +69,11 @@ void main() {
 
       var textSymbolizers = rules.first.textSymbolizers;
       expect(textSymbolizers.length, 1);
-      expect(textSymbolizers[0].labelName, "name");
-      expect(textSymbolizers[0].size, 12.0);
-      expect(textSymbolizers[0].textColor, "#0432FF");
-      expect(textSymbolizers[0].haloColor, "#FEFFFF");
-      expect(textSymbolizers[0].haloSize, 1);
+      expect(textSymbolizers[0].style.labelName, "name");
+      expect(textSymbolizers[0].style.size, 12.0);
+      expect(textSymbolizers[0].style.textColor, "#0432FF");
+      expect(textSymbolizers[0].style.haloColor, "#FEFFFF");
+      expect(textSymbolizers[0].style.haloSize, 1);
     });
     test('polygon_simple_with_labels', () async {
       var sldFile = File('./test/files/sld/polygon_simple_with_labels.sld');
@@ -99,9 +99,9 @@ void main() {
 
       var textSymbolizers = rules.first.textSymbolizers;
       expect(textSymbolizers.length, 1);
-      expect(textSymbolizers[0].labelName, "name");
-      expect(textSymbolizers[0].size, 12.0);
-      expect(textSymbolizers[0].textColor, "#000000");
+      expect(textSymbolizers[0].style.labelName, "name");
+      expect(textSymbolizers[0].style.size, 12.0);
+      expect(textSymbolizers[0].style.textColor, "#000000");
     });
     test('polygon_simple_with_labels_qgis', () async {
       var sldFile =
@@ -124,9 +124,9 @@ void main() {
 
       var textSymbolizers = rules.last.textSymbolizers;
       expect(textSymbolizers.length, 1);
-      expect(textSymbolizers[0].labelName, "NAME");
-      expect(textSymbolizers[0].size, 25.0);
-      expect(textSymbolizers[0].textColor, "#000000");
+      expect(textSymbolizers[0].style.labelName, "NAME");
+      expect(textSymbolizers[0].style.size, 25.0);
+      expect(textSymbolizers[0].style.textColor, "#000000");
     });
 
     test('polygon_thematic_unique', () async {
@@ -171,14 +171,17 @@ void main() {
           File('./test/files/sld/points_simple_circle_with_label.sld');
       var parser1 = SldObjectParser.fromFile(sldFile);
       parser1.parse();
-      var pointStyle = parser1
+      var pointStyle1 = parser1
           .featureTypeStyles.first.rules.first.pointSymbolizers.first.style;
+      var textStyle1 = parser1
+          .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
 
       SldObjectBuilder builder = SldObjectBuilder("test");
       builder
           .addFeatureTypeStyle('group0')
           .addRule("rule 1")
-          .addPointSymbolizer(pointStyle);
+          .addPointSymbolizer(pointStyle1)
+          .addTextSymbolizer(textStyle1);
       var sldXml = builder.build();
       print(sldXml);
 
@@ -186,7 +189,37 @@ void main() {
       parser2.parse();
       var pointStyle2 = parser2
           .featureTypeStyles.first.rules.first.pointSymbolizers.first.style;
-      expect(pointStyle == pointStyle2, true);
+      expect(pointStyle1 == pointStyle2, true);
+      var textStyle2 = parser2
+          .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
+      expect(textStyle1 == textStyle2, true);
+    });
+    test('lines_simple_with_labels', () async {
+      var sldFile = File('./test/files/sld/lines_simple_with_labels.sld');
+      var parser1 = SldObjectParser.fromFile(sldFile);
+      parser1.parse();
+      var lineStyle1 = parser1
+          .featureTypeStyles.first.rules.first.lineSymbolizers.first.style;
+      var textStyle1 = parser1
+          .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
+
+      SldObjectBuilder builder = SldObjectBuilder("test");
+      builder
+          .addFeatureTypeStyle('group0')
+          .addRule("rule 1")
+          .addLineSymbolizer(lineStyle1)
+          .addTextSymbolizer(textStyle1);
+      var sldXml = builder.build();
+      print(sldXml);
+
+      var parser2 = SldObjectParser.fromString(sldXml);
+      parser2.parse();
+      var lineStyle2 = parser2
+          .featureTypeStyles.first.rules.first.lineSymbolizers.first.style;
+      expect(lineStyle1 == lineStyle2, true);
+      var textStyle2 = parser2
+          .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
+      expect(textStyle1 == textStyle2, true);
     });
   });
 

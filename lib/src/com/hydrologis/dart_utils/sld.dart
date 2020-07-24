@@ -168,6 +168,81 @@ class SldObjectBuilder {
     return this;
   }
 
+  SldObjectBuilder addLineSymbolizer(LineStyle style) {
+    if (currentRuleBuild != null) {
+      xml.XmlBuilder builder = xml.XmlBuilder();
+      builder.namespace(uriSld, SLD_NSP);
+
+      builder.element(LINESYMBOLIZER, namespace: uriSld, nest: () {
+        builder.element(STROKE, namespace: uriSld, nest: () {
+          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE);
+            builder.text(style.strokeColorHex);
+          });
+          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE_OPACITY);
+            builder.text(style.strokeOpacity);
+          });
+          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE_WIDTH);
+            builder.text(style.strokeWidth);
+          });
+        });
+      });
+      var build = builder.buildFragment();
+      currentRuleBuild.firstElementChild.children.add(build);
+    }
+    return this;
+  }
+
+  SldObjectBuilder addTextSymbolizer(TextStyle style) {
+    if (currentRuleBuild != null) {
+      xml.XmlBuilder builder = xml.XmlBuilder();
+      builder.namespace(uriSld, SLD_NSP);
+      builder.namespace(uriOgc, OGC_NSP);
+      builder.element(TEXTSYMBOLIZER, namespace: uriSld, nest: () {
+        // label
+        builder.element(LABEL, namespace: uriSld, nest: () {
+          builder.element(PROPERTY_NAME, namespace: uriOgc, nest: () {
+            builder.text(style.labelName);
+          });
+        });
+
+        // font
+        builder.element(FONT, namespace: uriSld, nest: () {
+          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FONT_SIZE);
+            builder.text(style.size);
+          });
+        });
+
+        // color
+        builder.element(FILL, namespace: uriSld, nest: () {
+          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FILL);
+            builder.text(style.textColor);
+          });
+        });
+
+        // halo
+        builder.element(HALO, namespace: uriSld, nest: () {
+          builder.element(RADIUS, namespace: uriSld, nest: () {
+            builder.text(style.haloSize);
+          });
+          builder.element(FILL, namespace: uriSld, nest: () {
+            builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+              builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FILL);
+              builder.text(style.haloColor);
+            });
+          });
+        });
+      });
+      var build = builder.buildFragment();
+      currentRuleBuild.firstElementChild.children.add(build);
+    }
+    return this;
+  }
+
   String build() {
     commitRule();
     commitFeatureTypeStyle();

@@ -41,18 +41,14 @@ class LineSymbolizer {
 }
 
 class TextSymbolizer {
-  String labelName = " - nv - ";
-  String textColor = "#000000";
-  double size = 12;
-  double haloSize = 1.0;
-  String haloColor = "#FFFFFF";
+  TextStyle style = TextStyle();
 
   TextSymbolizer(xml.XmlElement xmlElement) {
     var label = _findSingleElement(xmlElement, LABEL);
     if (label != null) {
       var labelNameElem = _findSingleElement(label, PROPERTY_NAME);
       if (labelNameElem != null) {
-        labelName = labelNameElem.text;
+        style.labelName = labelNameElem.text;
       }
     }
 
@@ -64,25 +60,25 @@ class TextSymbolizer {
 
         if (nameAttr != null &&
             StringUtilities.equalsIgnoreCase(nameAttr, ATTRIBUTE_FONT_SIZE)) {
-          size = double.parse(parameter.text);
+          style.size = double.parse(parameter.text);
         }
       }
     }
 
     PolygonStyle dummyStyle = PolygonStyle();
     _getFill(xmlElement, dummyStyle);
-    textColor = dummyStyle.fillColorHex;
+    style.textColor = dummyStyle.fillColorHex;
 
     var halo = _findSingleElement(xmlElement, HALO);
     if (halo != null) {
       var radius = _findSingleElement(halo, RADIUS);
       if (radius != null) {
-        haloSize = double.parse(radius.text);
+        style.haloSize = double.parse(radius.text);
       }
 
       PolygonStyle dummyStyle = PolygonStyle();
       _getFill(halo, dummyStyle);
-      haloColor = dummyStyle.fillColorHex;
+      style.haloColor = dummyStyle.fillColorHex;
     }
   }
 }
