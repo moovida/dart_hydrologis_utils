@@ -1,57 +1,5 @@
 part of dart_hydrologis_utils;
 
-enum Types {
-  STROKE_WIDTH,
-  STROKE_COLOR,
-  STROKE_OPACITY,
-  FILL_COLOR,
-  FILL_OPACITY,
-  TEXT_LABEL_FIELD,
-  TEXT_LABEL_SIZE,
-  TEXT_LABEL_COLOR,
-  TEXT_LABEL_HALO_SIZE,
-  TEXT_LABEL_HALO_COLOR,
-  MARKER_NAME,
-  MARKER_SIZE,
-}
-
-const STYLEDLAYERDESCRIPTOR = "StyledLayerDescriptor";
-const FEATURETYPESTYLE = "FeatureTypeStyle";
-const RULE = "Rule";
-
-const FILTER = "Filter";
-const PROPERTY_IS_EQUAL_TO = "PropertyIsEqualTo";
-const LITERAL = "Literal";
-
-const LINESYMBOLIZER = "LineSymbolizer";
-const POINTSYMBOLIZER = "PointSymbolizer";
-const POLYGONSYMBOLIZER = "PolygonSymbolizer";
-const TEXTSYMBOLIZER = "TextSymbolizer";
-
-const STROKE = "Stroke";
-const FILL = "Fill";
-const LABEL = "Label";
-const SIZE = "Size";
-const FONT = "Font";
-const HALO = "Halo";
-const RADIUS = "Radius";
-const GRAPHIC = "Graphic";
-const MARK = "Mark";
-const WELLKNOWNNAME = "WellKnownName";
-const CSS_PARAMETER = "CssParameter";
-const SVG_PARAMETER = "SvgParameter";
-const PROPERTY_NAME = "PropertyName";
-
-const ATTRIBUTE_NAME = "name";
-const ATTRIBUTE_STROKE = "stroke";
-const ATTRIBUTE_FILL = "fill";
-const ATTRIBUTE_FILL_OPACITY = "fill-opacity";
-const ATTRIBUTE_STROKE_WIDTH = "stroke-width";
-const ATTRIBUTE_STROKE_OPACITY = "stroke-opacity";
-const ATTRIBUTE_FONT_SIZE = "font-size";
-
-const DEF_NSP = '*';
-
 /// An SLD file parser.
 ///
 /// Once parsed, the list of FeatureTypeStyle can be accessed through [featureTypeStyles].
@@ -82,6 +30,149 @@ class SldObjectParser {
         featureTypeStyles.add(fts);
       }
     }
+  }
+}
+
+/// An SLD string builder.
+class SldObjectBuilder {
+  xml.XmlDocument document;
+  var userStyleNode;
+  var currentFeatureTypeStyleBuild;
+  var currentRuleBuild;
+  SldObjectBuilder(String name) {
+    var builder = xml.XmlBuilder();
+    builder.declaration(version: "1.0", encoding: 'UTF-8');
+
+    builder.element(STYLEDLAYERDESCRIPTOR, namespaces: allNamespaces, nest: () {
+      builder.attribute("xmlns", uri);
+      builder.attribute("version", "1.0.0");
+      builder.element(USERLAYER, namespace: uriSld, nest: () {
+        builder.element(USERSTYLE, namespace: uriSld, nest: () {
+          builder.element(USERSTYLE_NAME, namespace: uriSld, nest: () {
+            builder.text(name);
+          });
+        });
+      });
+    });
+
+    document = builder.buildDocument();
+    document.children.forEach((childNode) {
+      if (childNode is xml.XmlElement) {
+        var userStyleNodeList =
+            childNode.findAllElements(USERSTYLE, namespace: DEF_NSP);
+        if (userStyleNodeList.isNotEmpty) {
+          userStyleNode = userStyleNodeList.first;
+        }
+      }
+    });
+  }
+
+  SldObjectBuilder addFeatureTypeStyle(String ftsName) {
+    commitFeatureTypeStyle();
+    xml.XmlBuilder builder = xml.XmlBuilder();
+    builder.namespace(uriSld, SLD_NSP);
+    builder.element(FEATURETYPESTYLE, namespace: uriSld, nest: () {
+      builder.element(USERSTYLE_NAME, namespace: uriSld, nest: () {
+        builder.text(ftsName);
+      });
+    });
+    var build = builder.buildFragment();
+    currentFeatureTypeStyleBuild = build;
+    return this;
+  }
+
+  void commitFeatureTypeStyle() {
+    if (currentFeatureTypeStyleBuild != null) {
+      // add it to document
+      userStyleNode.children.add(currentFeatureTypeStyleBuild);
+      currentFeatureTypeStyleBuild = null;
+      currentRuleBuild = null;
+    }
+  }
+
+  SldObjectBuilder addRule(String ruleName) {
+    commitRule();
+    if (currentFeatureTypeStyleBuild != null) {
+      xml.XmlBuilder builder = xml.XmlBuilder();
+      builder.namespace(uriSld, SLD_NSP);
+      builder.element(RULE, namespace: uriSld, nest: () {
+        builder.element(USERSTYLE_NAME, namespace: uriSld, nest: () {
+          builder.text(ruleName);
+        });
+      });
+      var build = builder.buildFragment();
+      currentRuleBuild = build;
+    }
+    return this;
+  }
+
+  void commitRule() {
+    if (currentRuleBuild != null) {
+      // add it to fts
+      currentFeatureTypeStyleBuild.firstElementChild.children
+          .add(currentRuleBuild);
+      currentRuleBuild = null;
+    }
+  }
+
+  SldObjectBuilder addPointSymbolizer(PointStyle style) {
+    if (currentRuleBuild != null) {
+      xml.XmlBuilder builder = xml.XmlBuilder();
+      builder.namespace(uriSld, SLD_NSP);
+      builder.element(POINTSYMBOLIZER, namespace: uriSld, nest: () {
+        style.markerName ??= WktMarkers.CIRCLE.name;
+        builder.element(GRAPHIC, namespace: uriSld, nest: () {
+          // marker size
+          builder.element(SIZE, namespace: uriSld, nest: () {
+            builder.text(style.markerSize);
+          });
+          // marker
+          builder.element(MARK, namespace: uriSld, nest: () {
+            // shape
+            builder.element(WELLKNOWNNAME, namespace: uriSld, nest: () {
+              builder.text(style.markerName);
+            });
+
+            // fill
+            builder.element(FILL, namespace: uriSld, nest: () {
+              builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+                builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FILL);
+                builder.text(style.fillColorHex);
+              });
+              builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+                builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FILL_OPACITY);
+                builder.text(style.fillOpacity);
+              });
+            });
+            // stroke
+            builder.element(STROKE, namespace: uriSld, nest: () {
+              builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+                builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE);
+                builder.text(style.strokeColorHex);
+              });
+              builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+                builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE_OPACITY);
+                builder.text(style.strokeOpacity);
+              });
+              builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+                builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE_WIDTH);
+                builder.text(style.strokeWidth);
+              });
+            });
+          });
+        });
+      });
+      var build = builder.buildFragment();
+      currentRuleBuild.firstElementChild.children.add(build);
+    }
+    return this;
+  }
+
+  String build() {
+    commitRule();
+    commitFeatureTypeStyle();
+    var xmlString = document.toXmlString(pretty: true, indent: "  ");
+    return xmlString;
   }
 }
 
@@ -150,182 +241,4 @@ class Rule {
       });
     }
   }
-}
-
-/// Default point style class.
-class PointStyle {
-  String markerName = "Circle";
-  double markerSize = 5;
-  String fillColorHex = "#000000";
-  double fillOpacity = 1.0;
-  String strokeColorHex = "#000000";
-  double strokeWidth = 1.0;
-  double strokeOpacity = 1.0;
-}
-
-class PointSymbolizer {
-  PointStyle style = PointStyle();
-
-  PointSymbolizer(xml.XmlElement xmlElement) {
-    var graphicElem = _findSingleElement(xmlElement, GRAPHIC);
-    if (graphicElem != null) {
-      var sizeElem = _findSingleElement(graphicElem, SIZE);
-      if (sizeElem != null) {
-        style.markerSize = double.parse(sizeElem.text);
-      }
-      var markElem = _findSingleElement(graphicElem, MARK);
-      if (markElem != null) {
-        var wkNameElem = _findSingleElement(markElem, WELLKNOWNNAME);
-        if (wkNameElem != null) {
-          style.markerName = wkNameElem.text;
-        }
-        _getFill(markElem, style);
-        _getStroke(markElem, style);
-      }
-    }
-  }
-}
-
-/// Default polygon style class.
-class PolygonStyle {
-  String fillColorHex = "#000000";
-  double fillOpacity = 1.0;
-  String strokeColorHex = "#000000";
-  double strokeWidth = 1.0;
-  double strokeOpacity = 1.0;
-}
-
-class PolygonSymbolizer {
-  PolygonStyle style = PolygonStyle();
-
-  PolygonSymbolizer(xml.XmlElement xmlElement) {
-    _getStroke(xmlElement, style);
-    _getFill(xmlElement, style);
-  }
-}
-
-/// Default line style class
-class LineStyle {
-  String strokeColorHex = "#000000";
-  double strokeWidth = 1.0;
-  double strokeOpacity = 1.0;
-}
-
-class LineSymbolizer {
-  LineStyle style = LineStyle();
-
-  LineSymbolizer(xml.XmlElement xmlElement) {
-    _getStroke(xmlElement, style);
-  }
-}
-
-class TextSymbolizer {
-  String labelName = " - nv - ";
-  String textColor = "#000000";
-  double size = 12;
-  double haloSize = 1.0;
-  String haloColor = "#FFFFFF";
-
-  TextSymbolizer(xml.XmlElement xmlElement) {
-    var label = _findSingleElement(xmlElement, LABEL);
-    if (label != null) {
-      var labelNameElem = _findSingleElement(label, PROPERTY_NAME);
-      if (labelNameElem != null) {
-        labelName = labelNameElem.text;
-      }
-    }
-
-    var font = _findSingleElement(xmlElement, FONT);
-    if (font != null) {
-      var paramters = _getParamters(font);
-      for (var parameter in paramters) {
-        var nameAttr = parameter.getAttribute(ATTRIBUTE_NAME);
-
-        if (nameAttr != null &&
-            StringUtilities.equalsIgnoreCase(nameAttr, ATTRIBUTE_FONT_SIZE)) {
-          size = double.parse(parameter.text);
-        }
-      }
-    }
-
-    PolygonStyle dummyStyle = PolygonStyle();
-    _getFill(xmlElement, dummyStyle);
-    textColor = dummyStyle.fillColorHex;
-
-    var halo = _findSingleElement(xmlElement, HALO);
-    if (halo != null) {
-      var radius = _findSingleElement(halo, RADIUS);
-      if (radius != null) {
-        haloSize = double.parse(radius.text);
-      }
-
-      PolygonStyle dummyStyle = PolygonStyle();
-      _getFill(halo, dummyStyle);
-      haloColor = dummyStyle.fillColorHex;
-    }
-  }
-}
-
-/// COMMON METHODS
-///
-void _getStroke(xml.XmlElement xmlElement, dynamic styleObject) {
-  var strokes = xmlElement.findElements(STROKE, namespace: DEF_NSP);
-  if (strokes.isNotEmpty) {
-    var stroke = strokes.first;
-    var parameters = _getParamters(stroke);
-    if (parameters.isNotEmpty) {
-      for (var parameter in parameters) {
-        var attrName = parameter.getAttribute(ATTRIBUTE_NAME);
-
-        if (StringUtilities.equalsIgnoreCase(attrName, ATTRIBUTE_STROKE)) {
-          styleObject.strokeColorHex = parameter.text;
-        } else if (StringUtilities.equalsIgnoreCase(
-            attrName, ATTRIBUTE_STROKE_WIDTH)) {
-          styleObject.strokeWidth = double.parse(parameter.text);
-        } else if (StringUtilities.equalsIgnoreCase(
-            attrName, ATTRIBUTE_STROKE_OPACITY)) {
-          styleObject.strokeOpacity = double.parse(parameter.text);
-        }
-      }
-    }
-  }
-}
-
-Iterable<xml.XmlElement> _getParamters(xml.XmlElement element) {
-  var parameters = element.findElements(CSS_PARAMETER, namespace: DEF_NSP);
-  if (parameters.isEmpty) {
-    parameters = element.findElements(SVG_PARAMETER, namespace: DEF_NSP);
-  }
-  return parameters;
-}
-
-xml.XmlElement _findSingleElement(xml.XmlElement element, String tag) {
-  var label = element.findElements(tag, namespace: DEF_NSP);
-  if (label.isNotEmpty) {
-    return label.first;
-  }
-  return null;
-}
-
-void _getFill(xml.XmlElement xmlElement, dynamic styleObject) {
-  var fill = _findSingleElement(xmlElement, FILL);
-  if (fill != null) {
-    var paramters = _getParamters(fill);
-    for (var parameter in paramters) {
-      var nameAttr = parameter.getAttribute(ATTRIBUTE_NAME);
-      if (nameAttr != null &&
-          StringUtilities.equalsIgnoreCase(nameAttr, ATTRIBUTE_FILL)) {
-        styleObject.fillColorHex = parameter.text;
-      } else if (nameAttr != null &&
-          StringUtilities.equalsIgnoreCase(nameAttr, ATTRIBUTE_FILL_OPACITY)) {
-        styleObject.fillOpacity = double.parse(parameter.text);
-      }
-    }
-  }
-}
-
-class Filter {
-  /// A filter attribute holding unique values.
-  var uniqueValueKey;
-  var uniqueValueValue;
 }

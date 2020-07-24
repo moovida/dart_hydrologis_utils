@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 
 void main() {
-  group('SLD tests', () {
+  group('SLD Reader tests', () {
     test('points_simple_circle_with_label', () async {
       var sldFile =
           File('./test/files/sld/points_simple_circle_with_label.sld');
@@ -163,6 +163,30 @@ void main() {
           expect(style.fillOpacity, 0.5);
         }
       });
+    });
+  });
+  group('SLD Writer tests', () {
+    test('points_simple_with_label', () async {
+      var sldFile =
+          File('./test/files/sld/points_simple_circle_with_label.sld');
+      var parser1 = SldObjectParser.fromFile(sldFile);
+      parser1.parse();
+      var pointStyle = parser1
+          .featureTypeStyles.first.rules.first.pointSymbolizers.first.style;
+
+      SldObjectBuilder builder = SldObjectBuilder("test");
+      builder
+          .addFeatureTypeStyle('group0')
+          .addRule("rule 1")
+          .addPointSymbolizer(pointStyle);
+      var sldXml = builder.build();
+      print(sldXml);
+
+      var parser2 = SldObjectParser.fromString(sldXml);
+      parser2.parse();
+      var pointStyle2 = parser2
+          .featureTypeStyles.first.rules.first.pointSymbolizers.first.style;
+      expect(pointStyle == pointStyle2, true);
     });
   });
 
