@@ -221,6 +221,33 @@ void main() {
           .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
       expect(textStyle1 == textStyle2, true);
     });
+    test('polygon_simple_with_labels', () async {
+      var sldFile = File('./test/files/sld/polygon_simple_with_labels.sld');
+      var parser1 = SldObjectParser.fromFile(sldFile);
+      parser1.parse();
+      var polygonStyle1 = parser1
+          .featureTypeStyles.first.rules.first.polygonSymbolizers.first.style;
+      var textStyle1 = parser1
+          .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
+
+      SldObjectBuilder builder = SldObjectBuilder("test");
+      builder
+          .addFeatureTypeStyle('group0')
+          .addRule("rule 1")
+          .addPolygonSymbolizer(polygonStyle1)
+          .addTextSymbolizer(textStyle1);
+      var sldXml = builder.build();
+      print(sldXml);
+
+      var parser2 = SldObjectParser.fromString(sldXml);
+      parser2.parse();
+      var polygonStyle2 = parser2
+          .featureTypeStyles.first.rules.first.polygonSymbolizers.first.style;
+      expect(polygonStyle1 == polygonStyle2, true);
+      var textStyle2 = parser2
+          .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
+      expect(textStyle1 == textStyle2, true);
+    });
   });
 
   group('Files tests', () {

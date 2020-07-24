@@ -195,6 +195,45 @@ class SldObjectBuilder {
     return this;
   }
 
+  SldObjectBuilder addPolygonSymbolizer(PolygonStyle style) {
+    if (currentRuleBuild != null) {
+      xml.XmlBuilder builder = xml.XmlBuilder();
+      builder.namespace(uriSld, SLD_NSP);
+
+      builder.element(POLYGONSYMBOLIZER, namespace: uriSld, nest: () {
+        // fill
+        builder.element(FILL, namespace: uriSld, nest: () {
+          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FILL);
+            builder.text(style.fillColorHex);
+          });
+          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FILL_OPACITY);
+            builder.text(style.fillOpacity);
+          });
+        });
+        // stroke
+        builder.element(STROKE, namespace: uriSld, nest: () {
+          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE);
+            builder.text(style.strokeColorHex);
+          });
+          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE_OPACITY);
+            builder.text(style.strokeOpacity);
+          });
+          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
+            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE_WIDTH);
+            builder.text(style.strokeWidth);
+          });
+        });
+      });
+      var build = builder.buildFragment();
+      currentRuleBuild.firstElementChild.children.add(build);
+    }
+    return this;
+  }
+
   SldObjectBuilder addTextSymbolizer(TextStyle style) {
     if (currentRuleBuild != null) {
       xml.XmlBuilder builder = xml.XmlBuilder();
