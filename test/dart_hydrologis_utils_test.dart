@@ -6,8 +6,9 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 void main() {
   group('SLD tests', () {
     test('points_simple_circle_with_label', () async {
-      var sldFile = File('./test/files/sld/points_simple_circle_with_label.sld');
-      var sldObject = SldObject.fromFile(sldFile);
+      var sldFile =
+          File('./test/files/sld/points_simple_circle_with_label.sld');
+      var sldObject = SldObjectParser.fromFile(sldFile);
       sldObject.parse();
       var featureTypeStyles = sldObject.featureTypeStyles;
       expect(featureTypeStyles.length, 1);
@@ -32,7 +33,7 @@ void main() {
     });
     test('lines_double_rule_like_road', () async {
       var sldFile = File('./test/files/sld/lines_double_rule_like_road.sld');
-      var sldObject = SldObject.fromFile(sldFile);
+      var sldObject = SldObjectParser.fromFile(sldFile);
       sldObject.parse();
       var featureTypeStyles = sldObject.featureTypeStyles;
       expect(featureTypeStyles.length, 2);
@@ -53,7 +54,7 @@ void main() {
     });
     test('lines_simple_with_labels', () async {
       var sldFile = File('./test/files/sld/lines_simple_with_labels.sld');
-      var sldObject = SldObject.fromFile(sldFile);
+      var sldObject = SldObjectParser.fromFile(sldFile);
       sldObject.parse();
       var featureTypeStyles = sldObject.featureTypeStyles;
       expect(featureTypeStyles.length, 1);
@@ -76,7 +77,7 @@ void main() {
     });
     test('polygon_simple_with_labels', () async {
       var sldFile = File('./test/files/sld/polygon_simple_with_labels.sld');
-      var sldObject = SldObject.fromFile(sldFile);
+      var sldObject = SldObjectParser.fromFile(sldFile);
       sldObject.parse();
       var featureTypeStyles = sldObject.featureTypeStyles;
       expect(featureTypeStyles.length, 1);
@@ -103,8 +104,9 @@ void main() {
       expect(textSymbolizers[0].textColor, "#000000");
     });
     test('polygon_simple_with_labels_qgis', () async {
-      var sldFile = File('./test/files/sld/polygon_simple_with_labels_qgis.sld');
-      var sldObject = SldObject.fromFile(sldFile);
+      var sldFile =
+          File('./test/files/sld/polygon_simple_with_labels_qgis.sld');
+      var sldObject = SldObjectParser.fromFile(sldFile);
       sldObject.parse();
 
       var featureTypeStyles = sldObject.featureTypeStyles;
@@ -125,6 +127,42 @@ void main() {
       expect(textSymbolizers[0].labelName, "NAME");
       expect(textSymbolizers[0].size, 25.0);
       expect(textSymbolizers[0].textColor, "#000000");
+    });
+
+    test('polygon_thematic_unique', () async {
+      var sldFile = File('./test/files/sld/polygon_thematic_unique.sld');
+      var sldObject = SldObjectParser.fromFile(sldFile);
+      sldObject.parse();
+      var featureTypeStyles = sldObject.featureTypeStyles;
+      expect(featureTypeStyles.length, 1);
+
+      var rules = featureTypeStyles[0].rules;
+      expect(rules.length, 20);
+
+      rules.forEach((rule) {
+        var filter = rule.filter;
+        var field = filter.uniqueValueKey;
+        var value = filter.uniqueValueValue;
+        expect(field, 'region');
+
+        if (value == 'Abruzzo') {
+          var style = rule.polygonSymbolizers.first.style;
+          expect(style.fillColorHex, "#00BFBF");
+          expect(style.fillOpacity, 0.5);
+        } else if (value == 'Lombardia') {
+          var style = rule.polygonSymbolizers.first.style;
+          expect(style.fillColorHex, "#FFDF00");
+          expect(style.fillOpacity, 0.5);
+        } else if (value == 'Sardegna') {
+          var style = rule.polygonSymbolizers.first.style;
+          expect(style.fillColorHex, "#EF7F0F");
+          expect(style.fillOpacity, 0.5);
+        } else if (value == 'Trentino-Alto Adige') {
+          var style = rule.polygonSymbolizers.first.style;
+          expect(style.fillColorHex, "#BF7F3F");
+          expect(style.fillOpacity, 0.5);
+        }
+      });
     });
   });
 
@@ -159,10 +197,10 @@ void main() {
           "milanese", "Sôn bôn de magnà el véder, el me fa minga mal.");
     });
     test('turkish utf8', () async {
-      await checkUtf8("turkish", "جام ييه بلورم بڭا ضررى طوقونمز");
+      await checkUtf8("turkish", "جام ييه بلورم بڭا ضرر�� طوقونمز");
     });
     test('japanese utf8', () async {
-      await checkUtf8("japanese", "私はガラスを食べられます。それは私を傷つけません。");
+      await checkUtf8("japanese", "私はガラスを食��られます。それは私を傷つけません。");
     });
     test('korean utf8', () async {
       await checkUtf8("korean", "나는 유리를 먹을 수 있어요. 그래도 아프지 않아요");

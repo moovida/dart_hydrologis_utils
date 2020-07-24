@@ -18,7 +18,10 @@ enum Types {
 const STYLEDLAYERDESCRIPTOR = "StyledLayerDescriptor";
 const FEATURETYPESTYLE = "FeatureTypeStyle";
 const RULE = "Rule";
+
 const FILTER = "Filter";
+const PROPERTY_IS_EQUAL_TO = "PropertyIsEqualTo";
+const LITERAL = "Literal";
 
 const LINESYMBOLIZER = "LineSymbolizer";
 const POINTSYMBOLIZER = "PointSymbolizer";
@@ -49,18 +52,23 @@ const ATTRIBUTE_FONT_SIZE = "font-size";
 
 const DEF_NSP = '*';
 
-class SldObject {
+/// An SLD file parser.
+///
+/// Once parsed, the list of FeatureTypeStyle can be accessed through [featureTypeStyles].
+class SldObjectParser {
   xml.XmlDocument document;
 
   List<FeatureTypeStyle> featureTypeStyles = [];
 
-  SldObject(this.document);
+  SldObjectParser(this.document);
 
-  SldObject.fromString(String xmlString) : this(xml.parse(xmlString.trim()));
+  SldObjectParser.fromString(String xmlString)
+      : this(xml.XmlDocument.parse(xmlString.trim()));
 
-  SldObject.fromFile(File xmlFile)
+  SldObjectParser.fromFile(File xmlFile)
       : this.fromString(FileUtilities.readFile(xmlFile.path));
 
+  /// Parse the SLD xml.
   void parse() {
     var root = document.findElements(STYLEDLAYERDESCRIPTOR, namespace: DEF_NSP);
     if (root == null || root.isEmpty) {
@@ -86,9 +94,6 @@ class FeatureTypeStyle {
       Rule rule = Rule(r);
       rules.add(rule);
     }
-    // thematic?
-    // var filterElements =
-    //     allRules.first.findElements(FILTER, namespace: DEF_NSP);
   }
 }
 
@@ -97,6 +102,7 @@ class Rule {
   List<LineSymbolizer> lineSymbolizers = [];
   List<PolygonSymbolizer> polygonSymbolizers = [];
   List<TextSymbolizer> textSymbolizers = [];
+  Filter filter;
 
   Rule(xml.XmlElement xmlElement) {
     var pointSymbolizersList =
@@ -122,6 +128,26 @@ class Rule {
     for (var textSymbolizer in textSymbolizersList) {
       TextSymbolizer ts = TextSymbolizer(textSymbolizer);
       textSymbolizers.add(ts);
+    }
+
+    // find filters
+    var filtersList = xmlElement.findElements(FILTER, namespace: DEF_NSP);
+    if (filtersList != null && filtersList.isNotEmpty) {
+      filter = Filter();
+      filtersList.forEach((element) {
+        // check unique filter, right now only a simple is supported
+        var pEquals = _findSingleElement(element, PROPERTY_IS_EQUAL_TO);
+        if (pEquals != null) {
+          var pName = _findSingleElement(pEquals, PROPERTY_NAME);
+          var literal = _findSingleElement(pEquals, LITERAL);
+          if (pName != null && literal != null) {
+            var fieldName = pName.text;
+            var fieldValue = literal.text;
+            filter.uniqueValueKey = fieldName;
+            filter.uniqueValueValue = fieldValue;
+          }
+        }
+      });
     }
   }
 }
@@ -296,4 +322,10 @@ void _getFill(xml.XmlElement xmlElement, dynamic styleObject) {
       }
     }
   }
+}
+
+class Filter {
+  /// A filter attribute holding unique values.
+  var uniqueValueKey;
+  var uniqueValueValue;
 }

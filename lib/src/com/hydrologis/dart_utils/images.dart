@@ -25,7 +25,7 @@ class ImageUtilities {
   }
 
   static List<int> resizeImage(Uint8List bytes,
-      {int newWidth: 100, int longestSizeTo}) {
+      {int newWidth = 100, int longestSizeTo}) {
     img.Image image = img.decodeImage(bytes);
 
     img.Image thumbnail;
