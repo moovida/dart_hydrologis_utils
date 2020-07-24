@@ -183,7 +183,6 @@ void main() {
           .addPointSymbolizer(pointStyle1)
           .addTextSymbolizer(textStyle1);
       var sldXml = builder.build();
-      print(sldXml);
 
       var parser2 = SldObjectParser.fromString(sldXml);
       parser2.parse();
@@ -308,10 +307,10 @@ void main() {
           "milanese", "Sôn bôn de magnà el véder, el me fa minga mal.");
     });
     test('turkish utf8', () async {
-      await checkUtf8("turkish", "جام ييه بلورم بڭا ضرر�� طوقونمز");
+      await checkUtf8("turkish", "جام ييه بلورم بڭا ضررى طوقونمز");
     });
     test('japanese utf8', () async {
-      await checkUtf8("japanese", "私はガラスを食��られます。それは私を傷つけません。");
+      await checkUtf8("japanese", "私はガラスを食べられます。それは私を傷つけません。");
     });
     test('korean utf8', () async {
       await checkUtf8("korean", "나는 유리를 먹을 수 있어요. 그래도 아프지 않아요");
