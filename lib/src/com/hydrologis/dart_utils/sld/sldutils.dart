@@ -147,3 +147,33 @@ class Filter {
   var uniqueValueKey;
   var uniqueValueValue;
 }
+
+/// Default styles
+class DefaultSlds {
+  String simplePointSld() {
+    PointStyle ps = PointStyle();
+    return SldObjectBuilder("simplepoint")
+        .addFeatureTypeStyle("fts")
+        .addRule("rule")
+        .addPointSymbolizer(ps)
+        .build();
+  }
+
+  String simpleLineSld() {
+    LineStyle ls = LineStyle();
+    return SldObjectBuilder("simpleline")
+        .addFeatureTypeStyle("fts")
+        .addRule("rule")
+        .addLineSymbolizer(ls)
+        .build();
+  }
+
+  String simplePolygonSld() {
+    PolygonStyle ps = PolygonStyle();
+    return SldObjectBuilder("simplepolygon")
+        .addFeatureTypeStyle("fts")
+        .addRule("rule")
+        .addPolygonSymbolizer(ps)
+        .build();
+  }
+}
