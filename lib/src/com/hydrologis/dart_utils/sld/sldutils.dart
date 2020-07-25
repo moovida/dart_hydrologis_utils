@@ -150,7 +150,7 @@ class Filter {
 
 /// Default styles
 class DefaultSlds {
-  String simplePointSld() {
+  static String simplePointSld() {
     PointStyle ps = PointStyle();
     return SldObjectBuilder("simplepoint")
         .addFeatureTypeStyle("fts")
@@ -159,7 +159,7 @@ class DefaultSlds {
         .build();
   }
 
-  String simpleLineSld() {
+  static String simpleLineSld() {
     LineStyle ls = LineStyle();
     return SldObjectBuilder("simpleline")
         .addFeatureTypeStyle("fts")
@@ -168,7 +168,7 @@ class DefaultSlds {
         .build();
   }
 
-  String simplePolygonSld() {
+  static String simplePolygonSld() {
     PolygonStyle ps = PolygonStyle();
     return SldObjectBuilder("simplepolygon")
         .addFeatureTypeStyle("fts")
