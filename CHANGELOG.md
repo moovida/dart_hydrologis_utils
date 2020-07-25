@@ -1,3 +1,9 @@
+
+## 0.5.0
+
+- added building and writing of SLD styles
+- added read support for unique value filters (simple thematic maps)
+
 ## 0.4.1
 
 - removed logger 
