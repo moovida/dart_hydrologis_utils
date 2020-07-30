@@ -295,8 +295,9 @@ class SldObjectBuilder {
 class FeatureTypeStyle {
   List<Rule> rules = [];
   String name;
+  final int index;
 
-  FeatureTypeStyle(int index, xml.XmlElement xmlElement) {
+  FeatureTypeStyle(this.index, xml.XmlElement xmlElement) {
     var ftsName = _findSingleElement(xmlElement, FEATURETYPESTYLE_NAME);
     name = ftsName?.innerText ??= "FTS $index";
     var allRules = xmlElement.findAllElements(RULE, namespace: DEF_NSP);
@@ -315,8 +316,9 @@ class Rule {
   List<TextSymbolizer> textSymbolizers = [];
   Filter filter;
   String name;
+  final int index;
 
-  Rule(int index, xml.XmlElement xmlElement) {
+  Rule(this.index, xml.XmlElement xmlElement) {
     var ruleName = _findSingleElement(xmlElement, RULE_NAME);
     name = ruleName?.innerText ??= "Rule $index";
     var pointSymbolizersList =

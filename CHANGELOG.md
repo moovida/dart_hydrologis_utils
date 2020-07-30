@@ -1,3 +1,6 @@
+## 0.5.1
+
+- add index and reading of featuretypestyle and rules name
 
 ## 0.5.0
 
