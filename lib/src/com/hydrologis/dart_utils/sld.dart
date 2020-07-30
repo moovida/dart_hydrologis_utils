@@ -25,8 +25,9 @@ class SldObjectParser {
       var featureTypeStyleList =
           document.findAllElements(FEATURETYPESTYLE, namespace: DEF_NSP);
       // we read just the first
+      int index = 0;
       for (var featureTypeStyle in featureTypeStyleList) {
-        FeatureTypeStyle fts = FeatureTypeStyle(featureTypeStyle);
+        FeatureTypeStyle fts = FeatureTypeStyle(index++, featureTypeStyle);
         featureTypeStyles.add(fts);
       }
     }
@@ -293,11 +294,15 @@ class SldObjectBuilder {
 
 class FeatureTypeStyle {
   List<Rule> rules = [];
+  String name;
 
-  FeatureTypeStyle(xml.XmlElement xmlElement) {
+  FeatureTypeStyle(int index, xml.XmlElement xmlElement) {
+    var ftsName = _findSingleElement(xmlElement, FEATURETYPESTYLE_NAME);
+    name = ftsName?.innerText ??= "FTS $index";
     var allRules = xmlElement.findAllElements(RULE, namespace: DEF_NSP);
+    int rIndex = 0;
     for (var r in allRules) {
-      Rule rule = Rule(r);
+      Rule rule = Rule(rIndex++, r);
       rules.add(rule);
     }
   }
@@ -309,8 +314,11 @@ class Rule {
   List<PolygonSymbolizer> polygonSymbolizers = [];
   List<TextSymbolizer> textSymbolizers = [];
   Filter filter;
+  String name;
 
-  Rule(xml.XmlElement xmlElement) {
+  Rule(int index, xml.XmlElement xmlElement) {
+    var ruleName = _findSingleElement(xmlElement, RULE_NAME);
+    name = ruleName?.innerText ??= "Rule $index";
     var pointSymbolizersList =
         xmlElement.findElements(POINTSYMBOLIZER, namespace: DEF_NSP);
     for (var pointSymbolizer in pointSymbolizersList) {

@@ -12,6 +12,7 @@ void main() {
       sldObject.parse();
       var featureTypeStyles = sldObject.featureTypeStyles;
       expect(featureTypeStyles.length, 1);
+      expect(featureTypeStyles[0].name, "group0");
 
       var rules = featureTypeStyles[0].rules;
       expect(rules.length, 1);
@@ -37,6 +38,10 @@ void main() {
       sldObject.parse();
       var featureTypeStyles = sldObject.featureTypeStyles;
       expect(featureTypeStyles.length, 2);
+      expect(featureTypeStyles[0].name, "line");
+      expect(featureTypeStyles[0].rules[0].name, "line");
+      expect(featureTypeStyles[1].name, "back line");
+      expect(featureTypeStyles[1].rules[0].name, "back line");
 
       var rules = featureTypeStyles[0].rules;
       expect(rules.length, 1);
@@ -149,18 +154,22 @@ void main() {
           var style = rule.polygonSymbolizers.first.style;
           expect(style.fillColorHex, "#00BFBF");
           expect(style.fillOpacity, 0.5);
+          expect(rule.name, 'rule01');
         } else if (value == 'Lombardia') {
           var style = rule.polygonSymbolizers.first.style;
           expect(style.fillColorHex, "#FFDF00");
           expect(style.fillOpacity, 0.5);
+          expect(rule.name, 'rule10');
         } else if (value == 'Sardegna') {
           var style = rule.polygonSymbolizers.first.style;
           expect(style.fillColorHex, "#EF7F0F");
           expect(style.fillOpacity, 0.5);
+          expect(rule.name, 'rule14');
         } else if (value == 'Trentino-Alto Adige') {
           var style = rule.polygonSymbolizers.first.style;
           expect(style.fillColorHex, "#BF7F3F");
           expect(style.fillOpacity, 0.5);
+          expect(rule.name, 'rule17');
         }
       });
     });

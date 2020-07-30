@@ -35,8 +35,10 @@ const STYLEDLAYERDESCRIPTOR = "StyledLayerDescriptor";
 const USERLAYER = "UserLayer";
 const USERSTYLE = "UserStyle";
 const USERSTYLE_NAME = "Name";
+const FEATURETYPESTYLE_NAME = "Name";
 const FEATURETYPESTYLE = "FeatureTypeStyle";
 const RULE = "Rule";
+const RULE_NAME = "Name";
 
 const FILTER = "Filter";
 const PROPERTY_IS_EQUAL_TO = "PropertyIsEqualTo";
