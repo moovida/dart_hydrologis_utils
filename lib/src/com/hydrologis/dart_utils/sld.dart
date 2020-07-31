@@ -290,33 +290,6 @@ class SldObjectBuilder {
     var xmlString = document.toXmlString(pretty: true, indent: "  ");
     return xmlString;
   }
-
-  static String getDefaultPointSld() {
-    SldObjectBuilder builder = SldObjectBuilder("simplepoint");
-    builder
-        .addFeatureTypeStyle('fts0')
-        .addRule("rule0")
-        .addPointSymbolizer(PointStyle());
-    return builder.build();
-  }
-
-  static String getDefaultLineSld() {
-    SldObjectBuilder builder = SldObjectBuilder("simpleline");
-    builder
-        .addFeatureTypeStyle('fts0')
-        .addRule("rule0")
-        .addLineSymbolizer(LineStyle());
-    return builder.build();
-  }
-
-  static String getDefaultPolygonSld() {
-    SldObjectBuilder builder = SldObjectBuilder("simplepolygon");
-    builder
-        .addFeatureTypeStyle('fts0')
-        .addRule("rule0")
-        .addPolygonSymbolizer(PolygonStyle());
-    return builder.build();
-  }
 }
 
 class FeatureTypeStyle {

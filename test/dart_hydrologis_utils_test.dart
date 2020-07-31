@@ -284,21 +284,21 @@ void main() {
       expect(lineStyle12 == lineStyle22, true);
     });
     test('test defaults', () async {
-      var defaultPointSld = SldObjectBuilder.getDefaultPointSld();
+      var defaultPointSld = DefaultSlds.simplePointSld();
       var parser = SldObjectParser.fromString(defaultPointSld);
       parser.parse();
       var pointStyle =
           parser.featureTypeStyles[0].rules.first.pointSymbolizers.first.style;
       expect(pointStyle == PointStyle(), true);
 
-      var defaultLineSld = SldObjectBuilder.getDefaultLineSld();
+      var defaultLineSld = DefaultSlds.simpleLineSld();
       parser = SldObjectParser.fromString(defaultLineSld);
       parser.parse();
       var lineStyle =
           parser.featureTypeStyles[0].rules.first.lineSymbolizers.first.style;
       expect(lineStyle == LineStyle(), true);
 
-      var defaultPolygonSld = SldObjectBuilder.getDefaultPolygonSld();
+      var defaultPolygonSld = DefaultSlds.simplePolygonSld();
       parser = SldObjectParser.fromString(defaultPolygonSld);
       parser.parse();
       var polygonStyle = parser

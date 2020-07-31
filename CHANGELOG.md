@@ -1,3 +1,7 @@
+## 0.5.1+2
+
+- remove just added default and link testcase to already existing defaults
+
 ## 0.5.1+1
 
 - add default styles for geom types
