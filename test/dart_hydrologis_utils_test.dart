@@ -306,6 +306,86 @@ void main() {
       expect(polygonStyle == PolygonStyle(), true);
     });
   });
+  group('SLD modify tests', () {
+    test('test add textstyle', () async {
+      var defaultPointSld = DefaultSlds.simplePointSld();
+      var parser = SldObjectParser.fromString(defaultPointSld);
+      parser.parse();
+
+      expect(
+          parser.featureTypeStyles.first.rules.first.textSymbolizers.length, 0);
+
+      var rule = parser.featureTypeStyles.first.rules.first;
+      rule.addTextStyle(TextStyle());
+
+      var sldString = parser.toSldString();
+      parser = SldObjectParser.fromString(sldString);
+      parser.parse();
+      expect(
+          parser.featureTypeStyles.first.rules.first.textSymbolizers.length, 1);
+      var actual = parser
+          .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
+      var matcher = TextStyle();
+      expect(actual == matcher, true);
+    });
+    test('test add pointstyle', () async {
+      var defaultPointSld = DefaultSlds.simplePointSld();
+      var parser = SldObjectParser.fromString(defaultPointSld);
+      parser.parse();
+
+      expect(parser.featureTypeStyles.first.rules.first.pointSymbolizers.length,
+          1);
+
+      var rule = parser.featureTypeStyles.first.rules.first;
+      rule.addPointStyle(PointStyle());
+
+      var sldString = parser.toSldString();
+      parser = SldObjectParser.fromString(sldString);
+      parser.parse();
+      expect(parser.featureTypeStyles.first.rules.first.pointSymbolizers.length,
+          2);
+    });
+    test('test add linestyle', () async {
+      var defaultPointSld = DefaultSlds.simplePointSld();
+      var parser = SldObjectParser.fromString(defaultPointSld);
+      parser.parse();
+
+      expect(
+          parser.featureTypeStyles.first.rules.first.lineSymbolizers.length, 0);
+
+      var rule = parser.featureTypeStyles.first.rules.first;
+      rule.addLineStyle(LineStyle());
+
+      var sldString = parser.toSldString();
+      parser = SldObjectParser.fromString(sldString);
+      parser.parse();
+      expect(parser.featureTypeStyles.first.rules.first.pointSymbolizers.length,
+          1);
+      expect(
+          parser.featureTypeStyles.first.rules.first.lineSymbolizers.length, 1);
+    });
+    test('test add polygonstyle', () async {
+      var defaultPointSld = DefaultSlds.simplePointSld();
+      var parser = SldObjectParser.fromString(defaultPointSld);
+      parser.parse();
+
+      expect(
+          parser.featureTypeStyles.first.rules.first.polygonSymbolizers.length,
+          0);
+
+      var rule = parser.featureTypeStyles.first.rules.first;
+      rule.addPolygonStyle(PolygonStyle());
+
+      var sldString = parser.toSldString();
+      parser = SldObjectParser.fromString(sldString);
+      parser.parse();
+      expect(parser.featureTypeStyles.first.rules.first.pointSymbolizers.length,
+          1);
+      expect(
+          parser.featureTypeStyles.first.rules.first.polygonSymbolizers.length,
+          1);
+    });
+  });
 
   group('Files tests', () {
     test('bytes check', () async {

@@ -75,7 +75,7 @@ class PolygonStyle {
 
 /// Default text style class.
 class TextStyle {
-  String labelName = " - nv - ";
+  String labelName = "";
   String textColor = "#000000";
   double size = 12;
   double haloSize = 1.0;

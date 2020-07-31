@@ -32,6 +32,11 @@ class SldObjectParser {
       }
     }
   }
+
+  String toSldString() {
+    var xmlString = document.toXmlString(pretty: true, indent: "  ");
+    return xmlString;
+  }
 }
 
 /// An SLD string builder.
@@ -119,52 +124,7 @@ class SldObjectBuilder {
 
   SldObjectBuilder addPointSymbolizer(PointStyle style) {
     if (currentRuleBuild != null) {
-      xml.XmlBuilder builder = xml.XmlBuilder();
-      builder.namespace(uriSld, SLD_NSP);
-      builder.element(POINTSYMBOLIZER, namespace: uriSld, nest: () {
-        style.markerName ??= WktMarkers.CIRCLE.name;
-        builder.element(GRAPHIC, namespace: uriSld, nest: () {
-          // marker size
-          builder.element(SIZE, namespace: uriSld, nest: () {
-            builder.text(style.markerSize);
-          });
-          // marker
-          builder.element(MARK, namespace: uriSld, nest: () {
-            // shape
-            builder.element(WELLKNOWNNAME, namespace: uriSld, nest: () {
-              builder.text(style.markerName);
-            });
-
-            // fill
-            builder.element(FILL, namespace: uriSld, nest: () {
-              builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-                builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FILL);
-                builder.text(style.fillColorHex);
-              });
-              builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-                builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FILL_OPACITY);
-                builder.text(style.fillOpacity);
-              });
-            });
-            // stroke
-            builder.element(STROKE, namespace: uriSld, nest: () {
-              builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-                builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE);
-                builder.text(style.strokeColorHex);
-              });
-              builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-                builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE_OPACITY);
-                builder.text(style.strokeOpacity);
-              });
-              builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-                builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE_WIDTH);
-                builder.text(style.strokeWidth);
-              });
-            });
-          });
-        });
-      });
-      var build = builder.buildFragment();
+      xml.XmlDocumentFragment build = makePointStyleBuildFragment(style);
       currentRuleBuild.firstElementChild.children.add(build);
     }
     return this;
@@ -172,26 +132,7 @@ class SldObjectBuilder {
 
   SldObjectBuilder addLineSymbolizer(LineStyle style) {
     if (currentRuleBuild != null) {
-      xml.XmlBuilder builder = xml.XmlBuilder();
-      builder.namespace(uriSld, SLD_NSP);
-
-      builder.element(LINESYMBOLIZER, namespace: uriSld, nest: () {
-        builder.element(STROKE, namespace: uriSld, nest: () {
-          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE);
-            builder.text(style.strokeColorHex);
-          });
-          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE_OPACITY);
-            builder.text(style.strokeOpacity);
-          });
-          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE_WIDTH);
-            builder.text(style.strokeWidth);
-          });
-        });
-      });
-      var build = builder.buildFragment();
+      xml.XmlDocumentFragment build = makeLineStyleBuildFragment(style);
       currentRuleBuild.firstElementChild.children.add(build);
     }
     return this;
@@ -199,38 +140,7 @@ class SldObjectBuilder {
 
   SldObjectBuilder addPolygonSymbolizer(PolygonStyle style) {
     if (currentRuleBuild != null) {
-      xml.XmlBuilder builder = xml.XmlBuilder();
-      builder.namespace(uriSld, SLD_NSP);
-
-      builder.element(POLYGONSYMBOLIZER, namespace: uriSld, nest: () {
-        // fill
-        builder.element(FILL, namespace: uriSld, nest: () {
-          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FILL);
-            builder.text(style.fillColorHex);
-          });
-          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FILL_OPACITY);
-            builder.text(style.fillOpacity);
-          });
-        });
-        // stroke
-        builder.element(STROKE, namespace: uriSld, nest: () {
-          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE);
-            builder.text(style.strokeColorHex);
-          });
-          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE_OPACITY);
-            builder.text(style.strokeOpacity);
-          });
-          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_STROKE_WIDTH);
-            builder.text(style.strokeWidth);
-          });
-        });
-      });
-      var build = builder.buildFragment();
+      xml.XmlDocumentFragment build = makePolygonStyleBuildFragment(style);
       currentRuleBuild.firstElementChild.children.add(build);
     }
     return this;
@@ -238,47 +148,7 @@ class SldObjectBuilder {
 
   SldObjectBuilder addTextSymbolizer(TextStyle style) {
     if (currentRuleBuild != null) {
-      xml.XmlBuilder builder = xml.XmlBuilder();
-      builder.namespace(uriSld, SLD_NSP);
-      builder.namespace(uriOgc, OGC_NSP);
-      builder.element(TEXTSYMBOLIZER, namespace: uriSld, nest: () {
-        // label
-        builder.element(LABEL, namespace: uriSld, nest: () {
-          builder.element(PROPERTY_NAME, namespace: uriOgc, nest: () {
-            builder.text(style.labelName);
-          });
-        });
-
-        // font
-        builder.element(FONT, namespace: uriSld, nest: () {
-          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FONT_SIZE);
-            builder.text(style.size);
-          });
-        });
-
-        // color
-        builder.element(FILL, namespace: uriSld, nest: () {
-          builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-            builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FILL);
-            builder.text(style.textColor);
-          });
-        });
-
-        // halo
-        builder.element(HALO, namespace: uriSld, nest: () {
-          builder.element(RADIUS, namespace: uriSld, nest: () {
-            builder.text(style.haloSize);
-          });
-          builder.element(FILL, namespace: uriSld, nest: () {
-            builder.element(CSS_PARAMETER, namespace: uriSld, nest: () {
-              builder.attribute(ATTRIBUTE_NAME, ATTRIBUTE_FILL);
-              builder.text(style.haloColor);
-            });
-          });
-        });
-      });
-      var build = builder.buildFragment();
+      xml.XmlDocumentFragment build = makeTextStyleBuildFragment(style);
       currentRuleBuild.firstElementChild.children.add(build);
     }
     return this;
@@ -310,6 +180,7 @@ class FeatureTypeStyle {
 }
 
 class Rule {
+  xml.XmlElement ruleXmlElement;
   List<PointSymbolizer> pointSymbolizers = [];
   List<LineSymbolizer> lineSymbolizers = [];
   List<PolygonSymbolizer> polygonSymbolizers = [];
@@ -318,36 +189,36 @@ class Rule {
   String name;
   final int index;
 
-  Rule(this.index, xml.XmlElement xmlElement) {
-    var ruleName = _findSingleElement(xmlElement, RULE_NAME);
+  Rule(this.index, this.ruleXmlElement) {
+    var ruleName = _findSingleElement(ruleXmlElement, RULE_NAME);
     name = ruleName?.innerText ??= "Rule $index";
     var pointSymbolizersList =
-        xmlElement.findElements(POINTSYMBOLIZER, namespace: DEF_NSP);
+        ruleXmlElement.findElements(POINTSYMBOLIZER, namespace: DEF_NSP);
     for (var pointSymbolizer in pointSymbolizersList) {
       PointSymbolizer ps = PointSymbolizer(pointSymbolizer);
       pointSymbolizers.add(ps);
     }
     var lineSymbolizersList =
-        xmlElement.findElements(LINESYMBOLIZER, namespace: DEF_NSP);
+        ruleXmlElement.findElements(LINESYMBOLIZER, namespace: DEF_NSP);
     for (var lineSymbolizer in lineSymbolizersList) {
       LineSymbolizer ls = LineSymbolizer(lineSymbolizer);
       lineSymbolizers.add(ls);
     }
     var polygonSymbolizersList =
-        xmlElement.findElements(POLYGONSYMBOLIZER, namespace: DEF_NSP);
+        ruleXmlElement.findElements(POLYGONSYMBOLIZER, namespace: DEF_NSP);
     for (var polygonSymbolizer in polygonSymbolizersList) {
       PolygonSymbolizer ls = PolygonSymbolizer(polygonSymbolizer);
       polygonSymbolizers.add(ls);
     }
     var textSymbolizersList =
-        xmlElement.findElements(TEXTSYMBOLIZER, namespace: DEF_NSP);
+        ruleXmlElement.findElements(TEXTSYMBOLIZER, namespace: DEF_NSP);
     for (var textSymbolizer in textSymbolizersList) {
       TextSymbolizer ts = TextSymbolizer(textSymbolizer);
       textSymbolizers.add(ts);
     }
 
     // find filters
-    var filtersList = xmlElement.findElements(FILTER, namespace: DEF_NSP);
+    var filtersList = ruleXmlElement.findElements(FILTER, namespace: DEF_NSP);
     if (filtersList != null && filtersList.isNotEmpty) {
       filter = Filter();
       filtersList.forEach((element) {
@@ -365,5 +236,29 @@ class Rule {
         }
       });
     }
+  }
+
+  /// Add a text[style] as symbolizer to the rule xml element.
+  void addTextStyle(TextStyle style) {
+    var textFragment = makeTextStyleBuildFragment(style);
+    ruleXmlElement.children.add(textFragment);
+  }
+
+  /// Add a polygon[style] as symbolizer to the rule xml element.
+  void addPolygonStyle(PolygonStyle style) {
+    var polygonFragment = makePolygonStyleBuildFragment(style);
+    ruleXmlElement.children.add(polygonFragment);
+  }
+
+  /// Add a line[style] as symbolizer to the rule xml element.
+  void addLineStyle(LineStyle style) {
+    var lineFragment = makeLineStyleBuildFragment(style);
+    ruleXmlElement.children.add(lineFragment);
+  }
+
+  /// Add a point[style] as symbolizer to the rule xml element.
+  void addPointStyle(PointStyle style) {
+    var pointFragment = makePointStyleBuildFragment(style);
+    ruleXmlElement.children.add(pointFragment);
   }
 }
