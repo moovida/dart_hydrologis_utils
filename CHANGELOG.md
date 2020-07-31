@@ -1,3 +1,7 @@
+## 0.5.1+1
+
+- add default styles for geom types
+
 ## 0.5.1
 
 - add index and reading of featuretypestyle and rules name
