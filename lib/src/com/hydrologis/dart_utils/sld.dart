@@ -242,6 +242,8 @@ class Rule {
   void addTextStyle(TextStyle style) {
     var textFragment = makeTextStyleBuildFragment(style);
     ruleXmlElement.children.add(textFragment);
+    var tSym = TextSymbolizer(textFragment.children.first);
+    textSymbolizers.add(tSym);
   }
 
   /// Remove a text symbolizer from the rule xml element.
@@ -259,6 +261,14 @@ class Rule {
         var tmpSymbolizer = TextSymbolizer(element);
         if (style == tmpSymbolizer.style) {
           removed = true;
+          bool removedSym = false;
+          textSymbolizers.removeWhere((element) {
+            if (removedSym) {
+              return false;
+            }
+            removedSym = element.style == tmpSymbolizer.style;
+            return removedSym;
+          });
           return true;
         }
       }
@@ -270,6 +280,8 @@ class Rule {
   void addPolygonStyle(PolygonStyle style) {
     var polygonFragment = makePolygonStyleBuildFragment(style);
     ruleXmlElement.children.add(polygonFragment);
+    var pSym = PolygonSymbolizer(polygonFragment.children.first);
+    polygonSymbolizers.add(pSym);
   }
 
   /// Remove a polygon symbolizer from the rule xml element.
@@ -287,6 +299,14 @@ class Rule {
         var tmpSymbolizer = PolygonSymbolizer(element);
         if (style == tmpSymbolizer.style) {
           removed = true;
+          bool removedSym = false;
+          polygonSymbolizers.removeWhere((element) {
+            if (removedSym) {
+              return false;
+            }
+            removedSym = element.style == tmpSymbolizer.style;
+            return removedSym;
+          });
           return true;
         }
       }
@@ -298,6 +318,8 @@ class Rule {
   void addLineStyle(LineStyle style) {
     var lineFragment = makeLineStyleBuildFragment(style);
     ruleXmlElement.children.add(lineFragment);
+    var lSym = LineSymbolizer(lineFragment.children.first);
+    lineSymbolizers.add(lSym);
   }
 
   /// Remove a line symbolizer from the rule xml element.
@@ -315,6 +337,14 @@ class Rule {
         var tmpSymbolizer = LineSymbolizer(element);
         if (style == tmpSymbolizer.style) {
           removed = true;
+          bool removedSym = false;
+          lineSymbolizers.removeWhere((element) {
+            if (removedSym) {
+              return false;
+            }
+            removedSym = element.style == tmpSymbolizer.style;
+            return removedSym;
+          });
           return true;
         }
       }
@@ -326,6 +356,8 @@ class Rule {
   void addPointStyle(PointStyle style) {
     var pointFragment = makePointStyleBuildFragment(style);
     ruleXmlElement.children.add(pointFragment);
+    var pSym = PointSymbolizer(pointFragment.children.first);
+    pointSymbolizers.add(pSym);
   }
 
   /// Remove a point symbolizer from the rule xml element.
@@ -343,6 +375,15 @@ class Rule {
         var tmpSymbolizer = PointSymbolizer(element);
         if (style == tmpSymbolizer.style) {
           removed = true;
+          bool removedSym = false;
+          pointSymbolizers.removeWhere((element) {
+            if (removedSym) {
+              return false;
+            }
+            removedSym = element.style == tmpSymbolizer.style;
+            return removedSym;
+          });
+
           return true;
         }
       }

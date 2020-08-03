@@ -320,6 +320,9 @@ void main() {
       var textStyle = TextStyle();
       rule.addTextStyle(textStyle);
 
+      expect(
+          parser.featureTypeStyles.first.rules.first.textSymbolizers.length, 1);
+
       // generate new sld xml and reparse it
       var sldString = parser.toSldString();
       parser = SldObjectParser.fromString(sldString);
@@ -336,6 +339,9 @@ void main() {
       // remove teh text from teh style again
       rule = parser.featureTypeStyles.first.rules.first;
       rule.removeTextStyle(textStyle);
+
+      expect(
+          parser.featureTypeStyles.first.rules.first.textSymbolizers.length, 0);
 
       // generate new sld xml and reparse it
       sldString = parser.toSldString();
@@ -358,6 +364,11 @@ void main() {
       var pointStyle = PointStyle();
       rule.addPointStyle(pointStyle);
 
+      // before conversion to XML
+      expect(parser.featureTypeStyles.first.rules.first.pointSymbolizers.length,
+          2);
+
+      // after conversion to XML
       var sldString = parser.toSldString();
       parser = SldObjectParser.fromString(sldString);
       parser.parse();
@@ -366,6 +377,9 @@ void main() {
 
       rule = parser.featureTypeStyles.first.rules.first;
       rule.removePointStyle(pointStyle);
+
+      expect(parser.featureTypeStyles.first.rules.first.pointSymbolizers.length,
+          1);
 
       // generate new sld xml and reparse it
       sldString = parser.toSldString();
@@ -385,6 +399,8 @@ void main() {
       var rule = parser.featureTypeStyles.first.rules.first;
       var lineStyle = LineStyle();
       rule.addLineStyle(lineStyle);
+      expect(
+          parser.featureTypeStyles.first.rules.first.lineSymbolizers.length, 1);
 
       var sldString = parser.toSldString();
       parser = SldObjectParser.fromString(sldString);
@@ -396,6 +412,9 @@ void main() {
 
       rule = parser.featureTypeStyles.first.rules.first;
       rule.removeLineStyle(lineStyle);
+      expect(
+          parser.featureTypeStyles.first.rules.first.lineSymbolizers.length, 0);
+
       // generate new sld xml and reparse it
       sldString = parser.toSldString();
       parser = SldObjectParser.fromString(sldString);
@@ -404,7 +423,7 @@ void main() {
       expect(
           parser.featureTypeStyles.first.rules.first.lineSymbolizers.length, 0);
     });
-    test('test add polygonstyle', () async {
+    test('test add/remove polygonstyle', () async {
       var defaultPointSld = DefaultSlds.simplePointSld();
       var parser = SldObjectParser.fromString(defaultPointSld);
       parser.parse();
@@ -417,6 +436,10 @@ void main() {
       var polygonStyle = PolygonStyle();
       rule.addPolygonStyle(polygonStyle);
 
+      expect(
+          parser.featureTypeStyles.first.rules.first.polygonSymbolizers.length,
+          1);
+
       var sldString = parser.toSldString();
       parser = SldObjectParser.fromString(sldString);
       parser.parse();
@@ -428,6 +451,11 @@ void main() {
 
       rule = parser.featureTypeStyles.first.rules.first;
       rule.removePolygonStyle(polygonStyle);
+
+      expect(
+          parser.featureTypeStyles.first.rules.first.polygonSymbolizers.length,
+          0);
+
       // generate new sld xml and reparse it
       sldString = parser.toSldString();
       parser = SldObjectParser.fromString(sldString);

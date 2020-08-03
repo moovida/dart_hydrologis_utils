@@ -1,3 +1,7 @@
+## 0.5.2+1
+
+- fixes
+
 ## 0.5.2
 
 - add and remove symbolizers based on style from rules to modify existing SLD.
