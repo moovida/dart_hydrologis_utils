@@ -307,7 +307,7 @@ void main() {
     });
   });
   group('SLD modify tests', () {
-    test('test add textstyle', () async {
+    test('test add/remove textstyle', () async {
       var defaultPointSld = DefaultSlds.simplePointSld();
       var parser = SldObjectParser.fromString(defaultPointSld);
       parser.parse();
@@ -315,20 +315,38 @@ void main() {
       expect(
           parser.featureTypeStyles.first.rules.first.textSymbolizers.length, 0);
 
+      // add text style inside rule
       var rule = parser.featureTypeStyles.first.rules.first;
-      rule.addTextStyle(TextStyle());
+      var textStyle = TextStyle();
+      rule.addTextStyle(textStyle);
 
+      // generate new sld xml and reparse it
       var sldString = parser.toSldString();
       parser = SldObjectParser.fromString(sldString);
       parser.parse();
       expect(
           parser.featureTypeStyles.first.rules.first.textSymbolizers.length, 1);
+
+      // get the rule of the new sld
       var actual = parser
           .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
       var matcher = TextStyle();
       expect(actual == matcher, true);
+
+      // remove teh text from teh style again
+      rule = parser.featureTypeStyles.first.rules.first;
+      rule.removeTextStyle(textStyle);
+
+      // generate new sld xml and reparse it
+      sldString = parser.toSldString();
+      parser = SldObjectParser.fromString(sldString);
+      parser.parse();
+
+      expect(
+          parser.featureTypeStyles.first.rules.first.textSymbolizers.length, 0);
     });
-    test('test add pointstyle', () async {
+
+    test('test add/remove pointstyle', () async {
       var defaultPointSld = DefaultSlds.simplePointSld();
       var parser = SldObjectParser.fromString(defaultPointSld);
       parser.parse();
@@ -337,15 +355,26 @@ void main() {
           1);
 
       var rule = parser.featureTypeStyles.first.rules.first;
-      rule.addPointStyle(PointStyle());
+      var pointStyle = PointStyle();
+      rule.addPointStyle(pointStyle);
 
       var sldString = parser.toSldString();
       parser = SldObjectParser.fromString(sldString);
       parser.parse();
       expect(parser.featureTypeStyles.first.rules.first.pointSymbolizers.length,
           2);
+
+      rule = parser.featureTypeStyles.first.rules.first;
+      rule.removePointStyle(pointStyle);
+
+      // generate new sld xml and reparse it
+      sldString = parser.toSldString();
+      parser = SldObjectParser.fromString(sldString);
+      parser.parse();
+      expect(parser.featureTypeStyles.first.rules.first.pointSymbolizers.length,
+          1);
     });
-    test('test add linestyle', () async {
+    test('test add/remove linestyle', () async {
       var defaultPointSld = DefaultSlds.simplePointSld();
       var parser = SldObjectParser.fromString(defaultPointSld);
       parser.parse();
@@ -354,7 +383,8 @@ void main() {
           parser.featureTypeStyles.first.rules.first.lineSymbolizers.length, 0);
 
       var rule = parser.featureTypeStyles.first.rules.first;
-      rule.addLineStyle(LineStyle());
+      var lineStyle = LineStyle();
+      rule.addLineStyle(lineStyle);
 
       var sldString = parser.toSldString();
       parser = SldObjectParser.fromString(sldString);
@@ -363,6 +393,16 @@ void main() {
           1);
       expect(
           parser.featureTypeStyles.first.rules.first.lineSymbolizers.length, 1);
+
+      rule = parser.featureTypeStyles.first.rules.first;
+      rule.removeLineStyle(lineStyle);
+      // generate new sld xml and reparse it
+      sldString = parser.toSldString();
+      parser = SldObjectParser.fromString(sldString);
+      parser.parse();
+
+      expect(
+          parser.featureTypeStyles.first.rules.first.lineSymbolizers.length, 0);
     });
     test('test add polygonstyle', () async {
       var defaultPointSld = DefaultSlds.simplePointSld();
@@ -374,7 +414,8 @@ void main() {
           0);
 
       var rule = parser.featureTypeStyles.first.rules.first;
-      rule.addPolygonStyle(PolygonStyle());
+      var polygonStyle = PolygonStyle();
+      rule.addPolygonStyle(polygonStyle);
 
       var sldString = parser.toSldString();
       parser = SldObjectParser.fromString(sldString);
@@ -384,6 +425,17 @@ void main() {
       expect(
           parser.featureTypeStyles.first.rules.first.polygonSymbolizers.length,
           1);
+
+      rule = parser.featureTypeStyles.first.rules.first;
+      rule.removePolygonStyle(polygonStyle);
+      // generate new sld xml and reparse it
+      sldString = parser.toSldString();
+      parser = SldObjectParser.fromString(sldString);
+      parser.parse();
+
+      expect(
+          parser.featureTypeStyles.first.rules.first.polygonSymbolizers.length,
+          0);
     });
   });
 

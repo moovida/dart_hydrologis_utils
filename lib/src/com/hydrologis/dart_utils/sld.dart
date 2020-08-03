@@ -244,10 +244,54 @@ class Rule {
     ruleXmlElement.children.add(textFragment);
   }
 
+  /// Remove a text symbolizer from the rule xml element.
+  ///
+  /// The remove, the [style] is used. The first equal to the style is removed.
+  void removeTextStyle(TextStyle style) {
+    bool removed = false;
+    ruleXmlElement.children.removeWhere((element) {
+      if (removed) {
+        return false;
+      }
+      if (element.outerXml
+          .toUpperCase()
+          .contains(TEXTSYMBOLIZER.toUpperCase())) {
+        var tmpSymbolizer = TextSymbolizer(element);
+        if (style == tmpSymbolizer.style) {
+          removed = true;
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+
   /// Add a polygon[style] as symbolizer to the rule xml element.
   void addPolygonStyle(PolygonStyle style) {
     var polygonFragment = makePolygonStyleBuildFragment(style);
     ruleXmlElement.children.add(polygonFragment);
+  }
+
+  /// Remove a polygon symbolizer from the rule xml element.
+  ///
+  /// The remove, the [style] is used. The first equal to the style is removed.
+  void removePolygonStyle(PolygonStyle style) {
+    bool removed = false;
+    ruleXmlElement.children.removeWhere((element) {
+      if (removed) {
+        return false;
+      }
+      if (element.outerXml
+          .toUpperCase()
+          .contains(POLYGONSYMBOLIZER.toUpperCase())) {
+        var tmpSymbolizer = PolygonSymbolizer(element);
+        if (style == tmpSymbolizer.style) {
+          removed = true;
+          return true;
+        }
+      }
+      return false;
+    });
   }
 
   /// Add a line[style] as symbolizer to the rule xml element.
@@ -256,9 +300,53 @@ class Rule {
     ruleXmlElement.children.add(lineFragment);
   }
 
+  /// Remove a line symbolizer from the rule xml element.
+  ///
+  /// The remove, the [style] is used. The first equal to the style is removed.
+  void removeLineStyle(LineStyle style) {
+    bool removed = false;
+    ruleXmlElement.children.removeWhere((element) {
+      if (removed) {
+        return false;
+      }
+      if (element.outerXml
+          .toUpperCase()
+          .contains(LINESYMBOLIZER.toUpperCase())) {
+        var tmpSymbolizer = LineSymbolizer(element);
+        if (style == tmpSymbolizer.style) {
+          removed = true;
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+
   /// Add a point[style] as symbolizer to the rule xml element.
   void addPointStyle(PointStyle style) {
     var pointFragment = makePointStyleBuildFragment(style);
     ruleXmlElement.children.add(pointFragment);
+  }
+
+  /// Remove a point symbolizer from the rule xml element.
+  ///
+  /// The remove, the [style] is used. The first equal to the style is removed.
+  void removePointStyle(PointStyle style) {
+    bool removed = false;
+    ruleXmlElement.children.removeWhere((element) {
+      if (removed) {
+        return false;
+      }
+      if (element.outerXml
+          .toUpperCase()
+          .contains(POINTSYMBOLIZER.toUpperCase())) {
+        var tmpSymbolizer = PointSymbolizer(element);
+        if (style == tmpSymbolizer.style) {
+          removed = true;
+          return true;
+        }
+      }
+      return false;
+    });
   }
 }

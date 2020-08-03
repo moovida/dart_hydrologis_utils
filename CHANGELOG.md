@@ -1,3 +1,7 @@
+## 0.5.2
+
+- add and remove symbolizers based on style from rules to modify existing SLD.
+
 ## 0.5.1+2
 
 - remove just added default and link testcase to already existing defaults
