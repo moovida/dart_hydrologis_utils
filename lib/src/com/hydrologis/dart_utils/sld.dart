@@ -45,6 +45,7 @@ class SldObjectBuilder {
   var userStyleNode;
   var currentFeatureTypeStyleBuild;
   var currentRuleBuild;
+
   SldObjectBuilder(String name) {
     var builder = xml.XmlBuilder();
     builder.declaration(version: "1.0", encoding: 'UTF-8');
@@ -73,9 +74,10 @@ class SldObjectBuilder {
     });
   }
 
+  /// Add a new FTS with given [ftsName].
   SldObjectBuilder addFeatureTypeStyle(String ftsName) {
-    commitRule();
-    commitFeatureTypeStyle();
+    _commitRule();
+    _commitFeatureTypeStyle();
     xml.XmlBuilder builder = xml.XmlBuilder();
     builder.namespace(uriSld, SLD_NSP);
     builder.element(FEATURETYPESTYLE, namespace: uriSld, nest: () {
@@ -88,7 +90,7 @@ class SldObjectBuilder {
     return this;
   }
 
-  void commitFeatureTypeStyle() {
+  void _commitFeatureTypeStyle() {
     if (currentFeatureTypeStyleBuild != null) {
       // add it to document
       userStyleNode.children.add(currentFeatureTypeStyleBuild);
@@ -97,8 +99,9 @@ class SldObjectBuilder {
     }
   }
 
+  /// Add a new Rule using the [ruleName].
   SldObjectBuilder addRule(String ruleName) {
-    commitRule();
+    _commitRule();
     if (currentFeatureTypeStyleBuild != null) {
       xml.XmlBuilder builder = xml.XmlBuilder();
       builder.namespace(uriSld, SLD_NSP);
@@ -113,7 +116,7 @@ class SldObjectBuilder {
     return this;
   }
 
-  void commitRule() {
+  void _commitRule() {
     if (currentRuleBuild != null) {
       // add it to fts
       currentFeatureTypeStyleBuild.firstElementChild.children
@@ -122,6 +125,7 @@ class SldObjectBuilder {
     }
   }
 
+  /// Add a new point symbolizer using the [style] object.
   SldObjectBuilder addPointSymbolizer(PointStyle style) {
     if (currentRuleBuild != null) {
       xml.XmlDocumentFragment build = makePointStyleBuildFragment(style);
@@ -130,6 +134,7 @@ class SldObjectBuilder {
     return this;
   }
 
+  /// Add a new line symbolizer using the [style] object.
   SldObjectBuilder addLineSymbolizer(LineStyle style) {
     if (currentRuleBuild != null) {
       xml.XmlDocumentFragment build = makeLineStyleBuildFragment(style);
@@ -138,6 +143,7 @@ class SldObjectBuilder {
     return this;
   }
 
+  /// Add a new polygon symbolizer using the [style] object.
   SldObjectBuilder addPolygonSymbolizer(PolygonStyle style) {
     if (currentRuleBuild != null) {
       xml.XmlDocumentFragment build = makePolygonStyleBuildFragment(style);
@@ -146,6 +152,7 @@ class SldObjectBuilder {
     return this;
   }
 
+  /// Add a new text symbolizer using the [style] object.
   SldObjectBuilder addTextSymbolizer(TextStyle style) {
     if (currentRuleBuild != null) {
       xml.XmlDocumentFragment build = makeTextStyleBuildFragment(style);
@@ -154,11 +161,39 @@ class SldObjectBuilder {
     return this;
   }
 
+  /// Build the SLD string from the current object.
   String build() {
-    commitRule();
-    commitFeatureTypeStyle();
+    _commitRule();
+    _commitFeatureTypeStyle();
     var xmlString = document.toXmlString(pretty: true, indent: "  ");
     return xmlString;
+  }
+
+  /// Build a SLD String from an existing tree starting from a list of [featureTypeStyles].
+  static String buildFromFeatureTypeStyles(
+      List<FeatureTypeStyle> featureTypeStyles) {
+    var builder = SldObjectBuilder("style");
+    featureTypeStyles.forEach((fts) {
+      builder.addFeatureTypeStyle(fts.name);
+      fts.rules.forEach((rule) {
+        builder.addRule(rule.name);
+
+        rule.pointSymbolizers.forEach((ps) {
+          builder.addPointSymbolizer(ps.style);
+        });
+        rule.lineSymbolizers.forEach((ls) {
+          builder.addLineSymbolizer(ls.style);
+        });
+        rule.polygonSymbolizers.forEach((ps) {
+          builder.addPolygonSymbolizer(ps.style);
+        });
+        rule.textSymbolizers.forEach((ts) {
+          builder.addTextSymbolizer(ts.style);
+        });
+      });
+    });
+    String sldString = builder.build();
+    return sldString;
   }
 }
 

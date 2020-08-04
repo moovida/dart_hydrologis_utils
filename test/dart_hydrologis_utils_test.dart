@@ -307,6 +307,37 @@ void main() {
           .featureTypeStyles[0].rules.first.polygonSymbolizers.first.style;
       expect(polygonStyle == PolygonStyle(), true);
     });
+    test('test build from fts', () async {
+      var sldFile =
+          File('./test/files/sld/points_simple_circle_with_label.sld');
+      var parser1 = SldObjectParser.fromFile(sldFile);
+      parser1.parse();
+      var fts1 = parser1.featureTypeStyles;
+
+      var sldString = SldObjectBuilder.buildFromFeatureTypeStyles(fts1);
+
+      var parser2 = SldObjectParser.fromString(sldString);
+      parser2.parse();
+      var fts2 = parser2.featureTypeStyles;
+
+      expect(fts1.length, fts2.length);
+      for (var i = 0; i < fts1.length; i++) {
+        var rules1 = fts1[i].rules;
+        var rules2 = fts2[i].rules;
+        expect(rules1.length, rules2.length);
+
+        for (var j = 0; j < rules1.length; j++) {
+          expect(rules1[j].polygonSymbolizers.length,
+              rules2[j].polygonSymbolizers.length);
+          expect(rules1[j].lineSymbolizers.length,
+              rules2[j].lineSymbolizers.length);
+          expect(rules1[j].pointSymbolizers.length,
+              rules2[j].pointSymbolizers.length);
+          expect(rules1[j].textSymbolizers.length,
+              rules2[j].textSymbolizers.length);
+        }
+      }
+    });
   });
   group('SLD modify tests', () {
     test('test add/remove textstyle', () async {
