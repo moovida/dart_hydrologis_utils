@@ -1,11 +1,8 @@
-## 0.5.2+2
+## 0.5.2+X
 
+- [SLD] small fixes
 - [SLD] fixes on default wktmarker name for points
 - [SLD] add forName utility method
-
-## 0.5.2+1
-
-- [SLD] fixes
 
 ## 0.5.2
 

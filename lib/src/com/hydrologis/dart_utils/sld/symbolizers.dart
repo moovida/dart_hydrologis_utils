@@ -14,7 +14,11 @@ class PointSymbolizer {
       if (markElem != null) {
         var wkNameElem = _findSingleElement(markElem, WELLKNOWNNAME);
         if (wkNameElem != null) {
-          style.markerName = wkNameElem.text;
+          try {
+            style.markerName = WktMarkers.forName(wkNameElem.text).name;
+          } catch (e) {
+            style.markerName = WktMarkers.CIRCLE.name;
+          }
         }
         _getFill(markElem, style);
         _getStroke(markElem, style);

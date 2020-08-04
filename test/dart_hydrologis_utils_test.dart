@@ -19,7 +19,9 @@ void main() {
 
       var pointSymbolizers = rules.first.pointSymbolizers;
       expect(pointSymbolizers.length, 1);
-      expect(pointSymbolizers[0].style.markerName, "Circle");
+      expect(pointSymbolizers[0].style.markerName, WktMarkers.CIRCLE.name);
+      expect(WktMarkers.forName(pointSymbolizers[0].style.markerName),
+          WktMarkers.CIRCLE);
       expect(pointSymbolizers[0].style.markerSize, 15);
       expect(pointSymbolizers[0].style.strokeColorHex, "#00F900");
       expect(pointSymbolizers[0].style.strokeWidth, 2.0);
