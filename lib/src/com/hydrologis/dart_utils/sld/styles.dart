@@ -2,7 +2,7 @@ part of dart_hydrologis_utils;
 
 /// Default point style class.
 class PointStyle {
-  String markerName = "Circle";
+  String markerName = WktMarkers.CIRCLE.name;
   double markerSize = 5;
   String fillColorHex = "#000000";
   double fillOpacity = 1.0;

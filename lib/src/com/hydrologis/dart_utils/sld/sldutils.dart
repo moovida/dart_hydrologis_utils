@@ -29,6 +29,16 @@ class WktMarkers {
   final String name;
 
   const WktMarkers._(this.name);
+
+  static WktMarkers forName(String wktName) {
+    wktName = wktName.toLowerCase();
+    for (var value in values) {
+      if (wktName == value.name) {
+        return value;
+      }
+    }
+    throw ArgumentError("No marker available for name: $wktName");
+  }
 }
 
 const STYLEDLAYERDESCRIPTOR = "StyledLayerDescriptor";
