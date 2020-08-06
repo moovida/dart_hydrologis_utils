@@ -33,6 +33,51 @@ class SldObjectParser {
     }
   }
 
+  /// Apply the passed [ftsAndRuleFunction] to each rule found.
+  ///
+  /// The function will have [FeatureTypeStyle] and [Rule] as parameters.
+  void applyForEachRule(Function ftsAndRuleFunction) {
+    featureTypeStyles.forEach((fts) {
+      fts.rules.forEach((rule) {
+        ftsAndRuleFunction(fts, rule);
+      });
+    });
+  }
+
+  /// Return the complete ordered list of rules, divided by [FeatureTypeStyle].
+  List<List<Rule>> getAllRules() {
+    List<List<Rule>> allRules = [];
+    featureTypeStyles.forEach((fts) {
+      allRules.add(fts.rules);
+    });
+    return allRules;
+  }
+
+  /// Get the first available [TextStyle].
+  ///
+  /// If [addIfNotExists] is true, then a new style is added to the first rule.
+  TextStyle getFirstTextStyle(bool addIfNotExists) {
+    var allRules = getAllRules();
+    var firstRule;
+    var hasOne = false;
+    for (var rules in allRules) {
+      for (var rule in rules) {
+        firstRule ??= rule;
+        hasOne = true;
+        if (rule.textSymbolizers.isNotEmpty) {
+          return rule.textSymbolizers[0].style;
+        }
+      }
+    }
+    if (addIfNotExists && hasOne) {
+      var textStyle = TextStyle();
+      firstRule.addTextStyle(textStyle);
+      return textStyle;
+    } else {
+      return null;
+    }
+  }
+
   String toSldString() {
     var xmlString = document.toXmlString(pretty: true, indent: "  ");
     return xmlString;
