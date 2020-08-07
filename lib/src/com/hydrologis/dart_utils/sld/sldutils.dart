@@ -199,6 +199,24 @@ xml.XmlDocumentFragment makeTextStyleBuildFragment(TextStyle style) {
   return build;
 }
 
+xml.XmlDocumentFragment makeFilterBuildFragment(Filter filter) {
+  xml.XmlBuilder builder = xml.XmlBuilder();
+  builder.namespace(uriSld, SLD_NSP);
+  builder.namespace(uriOgc, OGC_NSP);
+  builder.element(FILTER, namespace: uriSld, nest: () {
+    builder.element(PROPERTY_IS_EQUAL_TO, namespace: uriOgc, nest: () {
+      builder.element(PROPERTY_NAME, namespace: uriOgc, nest: () {
+        builder.text(filter.uniqueValueKey);
+      });
+      builder.element(LITERAL, namespace: uriOgc, nest: () {
+        builder.text(filter.uniqueValueValue);
+      });
+    });
+  });
+  var build = builder.buildFragment();
+  return build;
+}
+
 xml.XmlDocumentFragment makePolygonStyleBuildFragment(PolygonStyle style) {
   xml.XmlBuilder builder = xml.XmlBuilder();
   builder.namespace(uriSld, SLD_NSP);

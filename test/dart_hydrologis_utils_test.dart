@@ -308,8 +308,7 @@ void main() {
       expect(polygonStyle == PolygonStyle(), true);
     });
     test('test build from fts', () async {
-      var sldFile =
-          File('./test/files/sld/points_simple_circle_with_label.sld');
+      var sldFile = File('./test/files/sld/polygon_thematic_unique.sld');
       var parser1 = SldObjectParser.fromFile(sldFile);
       parser1.parse();
       var fts1 = parser1.featureTypeStyles;
@@ -327,14 +326,21 @@ void main() {
         expect(rules1.length, rules2.length);
 
         for (var j = 0; j < rules1.length; j++) {
-          expect(rules1[j].polygonSymbolizers.length,
-              rules2[j].polygonSymbolizers.length);
-          expect(rules1[j].lineSymbolizers.length,
-              rules2[j].lineSymbolizers.length);
-          expect(rules1[j].pointSymbolizers.length,
-              rules2[j].pointSymbolizers.length);
-          expect(rules1[j].textSymbolizers.length,
-              rules2[j].textSymbolizers.length);
+          var rule1 = rules1[j];
+          var rule2 = rules2[j];
+          expect(
+              rule1.polygonSymbolizers.length, rule2.polygonSymbolizers.length);
+          expect(rule1.lineSymbolizers.length, rule2.lineSymbolizers.length);
+          expect(rule1.pointSymbolizers.length, rule2.pointSymbolizers.length);
+          expect(rule1.textSymbolizers.length, rule2.textSymbolizers.length);
+
+          if (rule1.filter != null) {
+            expect(rule2.filter != null, true);
+
+            expect(rule1.filter.uniqueValueKey, rule2.filter.uniqueValueKey);
+            expect(
+                rule1.filter.uniqueValueValue, rule2.filter.uniqueValueValue);
+          }
         }
       }
     });

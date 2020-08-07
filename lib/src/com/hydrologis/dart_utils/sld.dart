@@ -206,6 +206,15 @@ class SldObjectBuilder {
     return this;
   }
 
+  /// Add a filter to the rule.
+  SldObjectBuilder addFilter(Filter filter) {
+    if (currentRuleBuild != null) {
+      xml.XmlDocumentFragment build = makeFilterBuildFragment(filter);
+      currentRuleBuild.firstElementChild.children.add(build);
+    }
+    return this;
+  }
+
   /// Build the SLD string from the current object.
   String build() {
     _commitRule();
@@ -223,6 +232,9 @@ class SldObjectBuilder {
       fts.rules.forEach((rule) {
         builder.addRule(rule.name);
 
+        if (rule.filter != null) {
+          builder.addFilter(rule.filter);
+        }
         rule.pointSymbolizers.forEach((ps) {
           builder.addPointSymbolizer(ps.style);
         });
