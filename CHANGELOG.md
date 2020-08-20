@@ -1,5 +1,6 @@
 ## 0.5.2+X
 
+- add duration and length format util methods
 - [SLD] small fixes
 - [SLD] fixes on default wktmarker name for points
 - [SLD] add forName utility method

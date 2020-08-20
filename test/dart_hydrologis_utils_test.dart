@@ -552,6 +552,19 @@ void main() {
       await checkUtf8("chinese", "我能吞下玻璃而不伤身体。");
     });
   });
+
+  group('utils tests', () {
+    test('time formatter', () async {
+      expect(StringUtilities.formatMeters(90.8), "91 m");
+      expect(StringUtilities.formatMeters(90.3), "90 m");
+      expect(StringUtilities.formatMeters(1000), "1.0 km");
+      expect(StringUtilities.formatMeters(12500), "12.5 km");
+
+      expect(StringUtilities.formatDurationMillis(1000), "1 sec");
+      expect(StringUtilities.formatDurationMillis(100000), "1 min, 40 sec");
+      expect(StringUtilities.formatDurationMillis(10000000), "2 h, 46 min");
+    });
+  });
 }
 
 Future<void> checkUtf8(String testFile, String match) async {
