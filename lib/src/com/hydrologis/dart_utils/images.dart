@@ -75,4 +75,73 @@ class ImageUtilities {
     // set the fact that it now has an alpha channel, else it will not work if prior rgb
     image.channels = img.Channels.rgba;
   }
+
+  /// Removes the given color as solid background from the image.
+  static void colorToAlphaBlend(
+      img.Image image, int redToHide, int greenToHide, int blueToHide) {
+    Uint8List pixels = image.getBytes(format: img.Format.rgba);
+    final length = pixels.lengthInBytes;
+    for (var i = 0; i < length; i = i + 4) {
+      c2a(pixels, i, redToHide, greenToHide, blueToHide);
+    }
+    // set the fact that it now has an alpha channel, else it will not work if prior rgb
+    image.channels = img.Channels.rgba;
+  }
+
+  static void c2a(Uint8List pixels, int index, int redToHide, int greenToHide,
+      int blueToHide) {
+    int red = pixels[index];
+    int green = pixels[index + 1];
+    int blue = pixels[index + 2];
+    double alpha = pixels[index + 3].toDouble();
+
+    double a4 = alpha;
+
+    double a1 = 0.0;
+    if (red > redToHide) {
+      a1 = (red - redToHide) / (255.0 - redToHide);
+    } else if (red < redToHide) {
+      a1 = (redToHide - red) / (redToHide);
+    }
+    double a2 = 0.0;
+    if (green > greenToHide) {
+      a2 = (green - greenToHide) / (255.0 - greenToHide);
+    } else if (green < greenToHide) {
+      a2 = (greenToHide - green) / (greenToHide);
+    }
+    double a3 = 0.0;
+    if (blue > blueToHide) {
+      a3 = (blue - blueToHide) / (255.0 - blueToHide);
+    } else if (blue < blueToHide) {
+      a3 = (blueToHide - blue) / (blueToHide);
+    }
+
+    if (a1 > a2) {
+      if (a1 > a3) {
+        alpha = a1;
+      } else {
+        alpha = a3;
+      }
+    } else {
+      if (a2 > a3) {
+        alpha = a2;
+      } else {
+        alpha = a3;
+      }
+    }
+
+    alpha *= 255.0;
+
+    if (alpha >= 1.0) {
+      red = (255.0 * (red - redToHide) / alpha + redToHide).toInt();
+      green = (255.0 * (green - greenToHide) / alpha + greenToHide).toInt();
+      blue = (255.0 * (blue - blueToHide) / alpha + blueToHide).toInt();
+
+      alpha *= a4 / 255.0;
+    }
+    pixels[index] = red;
+    pixels[index + 1] = green;
+    pixels[index + 2] = blue;
+    pixels[index + 3] = alpha.toInt();
+  }
 }

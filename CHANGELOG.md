@@ -1,5 +1,6 @@
-## 0.5.3
+## 0.5.3+x
 
+- added method to remove solid background from image
 - add methods to transform color to alpha in images
 
 ## 0.5.2+X
