@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:image/image.dart';
 import 'package:test/test.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 
@@ -563,6 +564,23 @@ void main() {
       expect(StringUtilities.formatDurationMillis(1000), "1 sec");
       expect(StringUtilities.formatDurationMillis(100000), "1 min, 40 sec");
       expect(StringUtilities.formatDurationMillis(10000000), "2 h, 46 min");
+    });
+  });
+  group('image tests', () {
+    test('color to alpha', () async {
+      var imgfile = File('./test/files/img/blackred2x2.png');
+
+      var bytes = ImageUtilities.bytesFromImageFile(imgfile.path);
+      var newBytes = ImageUtilities.colorToAlpha(bytes, 0, 0, 0);
+
+      var newImage = decodeImage(newBytes);
+      var newPixels = newImage.getBytes(format: Format.rgba);
+
+      //check changed alpha
+      expect(newPixels[3], 0);
+      expect(newPixels[7], 255);
+      expect(newPixels[11], 255);
+      expect(newPixels[15], 0);
     });
   });
 }
