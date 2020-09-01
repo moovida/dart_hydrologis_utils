@@ -1,3 +1,7 @@
+## 0.5.3
+
+- add methods to transform color to alpha in images
+
 ## 0.5.2+X
 
 - add duration and length format util methods
