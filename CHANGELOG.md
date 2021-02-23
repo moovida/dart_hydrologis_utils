@@ -1,3 +1,7 @@
+## 0.5.4
+
+- dependency upgrade
+
 ## 0.5.3+x
 
 - added method to remove solid background from image
