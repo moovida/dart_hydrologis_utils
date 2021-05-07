@@ -1,6 +1,7 @@
 library dart_hydrologis_utils;
 
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
@@ -9,6 +10,7 @@ import 'dart:convert' show utf8;
 import 'package:xml/xml.dart' as xml;
 
 part 'src/com/hydrologis/dart_utils/files.dart';
+part 'src/com/hydrologis/dart_utils/numeric.dart';
 part 'src/com/hydrologis/dart_utils/bytes.dart';
 part 'src/com/hydrologis/dart_utils/hashes.dart';
 part 'src/com/hydrologis/dart_utils/networks.dart';

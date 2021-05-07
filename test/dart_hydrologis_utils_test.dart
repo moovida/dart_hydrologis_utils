@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:image/image.dart';
 import 'package:test/test.dart';
@@ -632,6 +633,40 @@ void main() {
           expect(value, expectedSingleBandData[row][col]);
         }
       }
+    });
+  });
+
+  group('numeric tests', () {
+    test('smoothing test', () async {
+      List<dynamic> data = [
+        [0.0, 0.0],
+        [1.0, 1.0],
+        [2.0, 2.0],
+        [1.0, 1.0],
+        [0.0, 0.0],
+        [1.0, 1.0],
+        [2.0, 2.0],
+        [1.0, 1.0],
+        [0.0, 0.0],
+      ];
+
+      var avg = FeatureSlidingAverage(data);
+      List<dynamic> smooth = avg.smooth(3, 0.9);
+
+      expect(smooth[2][0], 1.4);
+      expect(smooth[4][0], 0.6);
+    });
+
+    test('trendline test', () async {
+      List<dynamic> data = [
+        [1.0, 3.0],
+        [2.0, 5.0],
+        [3.0, 6.5],
+      ];
+
+      var trendLine = TrendLine(data);
+      expect(trendLine.slope, 1.75);
+      expect(trendLine.yIntercept, 1.3333333333333333);
     });
   });
 }
