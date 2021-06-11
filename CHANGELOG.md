@@ -1,3 +1,7 @@
+## 0.5.6
+
+- dependencies upgrade
+
 ## 0.5.5
 
 - add numeric utils with smoother and simple trendline
