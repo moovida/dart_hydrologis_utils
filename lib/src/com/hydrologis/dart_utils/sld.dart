@@ -56,7 +56,7 @@ class SldObjectParser {
   /// Get the first available [TextStyle].
   ///
   /// If [addIfNotExists] is true, then a new style is added to the first rule.
-  TextStyle getFirstTextStyle(bool addIfNotExists) {
+  TextStyle? getFirstTextStyle(bool addIfNotExists) {
     var allRules = getAllRules();
     var firstRule;
     var hasOne = false;
@@ -86,7 +86,7 @@ class SldObjectParser {
 
 /// An SLD string builder.
 class SldObjectBuilder {
-  xml.XmlDocument document;
+  late xml.XmlDocument document;
   var userStyleNode;
   var currentFeatureTypeStyleBuild;
   var currentRuleBuild;
@@ -233,7 +233,7 @@ class SldObjectBuilder {
         builder.addRule(rule.name);
 
         if (rule.filter != null) {
-          builder.addFilter(rule.filter);
+          builder.addFilter(rule.filter!);
         }
         rule.pointSymbolizers.forEach((ps) {
           builder.addPointSymbolizer(ps.style);
@@ -256,12 +256,17 @@ class SldObjectBuilder {
 
 class FeatureTypeStyle {
   List<Rule> rules = [];
-  String name;
+  late String name;
   final int index;
 
   FeatureTypeStyle(this.index, xml.XmlElement xmlElement) {
     var ftsName = _findSingleElement(xmlElement, FEATURETYPESTYLE_NAME);
-    name = ftsName?.innerText ??= "FTS $index";
+
+    var innerText = ftsName?.innerText;
+    if (innerText == null || innerText.isEmpty) {
+      innerText = "FTS $index";
+    }
+    name = innerText;
     var allRules = xmlElement.findAllElements(RULE, namespace: DEF_NSP);
     int rIndex = 0;
     for (var r in allRules) {
@@ -277,13 +282,19 @@ class Rule {
   List<LineSymbolizer> lineSymbolizers = [];
   List<PolygonSymbolizer> polygonSymbolizers = [];
   List<TextSymbolizer> textSymbolizers = [];
-  Filter filter;
-  String name;
+  Filter? filter;
+  late String name;
   final int index;
 
   Rule(this.index, this.ruleXmlElement) {
     var ruleName = _findSingleElement(ruleXmlElement, RULE_NAME);
-    name = ruleName?.innerText ??= "Rule $index";
+
+    var innerText = ruleName?.innerText;
+    if (innerText == null || innerText.isEmpty) {
+      innerText = "Rule $index";
+    }
+    name = innerText;
+
     var pointSymbolizersList =
         ruleXmlElement.findElements(POINTSYMBOLIZER, namespace: DEF_NSP);
     for (var pointSymbolizer in pointSymbolizersList) {
@@ -311,7 +322,7 @@ class Rule {
 
     // find filters
     var filtersList = ruleXmlElement.findElements(FILTER, namespace: DEF_NSP);
-    if (filtersList != null && filtersList.isNotEmpty) {
+    if (filtersList.isNotEmpty) {
       filter = Filter();
       filtersList.forEach((element) {
         // check unique filter, right now only a simple is supported
@@ -322,8 +333,8 @@ class Rule {
           if (pName != null && literal != null) {
             var fieldName = pName.text;
             var fieldValue = literal.text;
-            filter.uniqueValueKey = fieldName;
-            filter.uniqueValueValue = fieldValue;
+            filter!.uniqueValueKey = fieldName;
+            filter!.uniqueValueValue = fieldValue;
           }
         }
       });
@@ -334,7 +345,7 @@ class Rule {
   void addTextStyle(TextStyle style) {
     var textFragment = makeTextStyleBuildFragment(style);
     ruleXmlElement.children.add(textFragment);
-    var tSym = TextSymbolizer(textFragment.children.first);
+    var tSym = TextSymbolizer(textFragment.children.first as xml.XmlElement);
     textSymbolizers.add(tSym);
   }
 
@@ -350,7 +361,7 @@ class Rule {
       if (element.outerXml
           .toUpperCase()
           .contains(TEXTSYMBOLIZER.toUpperCase())) {
-        var tmpSymbolizer = TextSymbolizer(element);
+        var tmpSymbolizer = TextSymbolizer(element as xml.XmlElement);
         if (style == tmpSymbolizer.style) {
           removed = true;
           bool removedSym = false;
@@ -372,7 +383,8 @@ class Rule {
   void addPolygonStyle(PolygonStyle style) {
     var polygonFragment = makePolygonStyleBuildFragment(style);
     ruleXmlElement.children.add(polygonFragment);
-    var pSym = PolygonSymbolizer(polygonFragment.children.first);
+    var pSym =
+        PolygonSymbolizer(polygonFragment.children.first as xml.XmlElement);
     polygonSymbolizers.add(pSym);
   }
 
@@ -388,7 +400,7 @@ class Rule {
       if (element.outerXml
           .toUpperCase()
           .contains(POLYGONSYMBOLIZER.toUpperCase())) {
-        var tmpSymbolizer = PolygonSymbolizer(element);
+        var tmpSymbolizer = PolygonSymbolizer(element as xml.XmlElement);
         if (style == tmpSymbolizer.style) {
           removed = true;
           bool removedSym = false;
@@ -410,7 +422,7 @@ class Rule {
   void addLineStyle(LineStyle style) {
     var lineFragment = makeLineStyleBuildFragment(style);
     ruleXmlElement.children.add(lineFragment);
-    var lSym = LineSymbolizer(lineFragment.children.first);
+    var lSym = LineSymbolizer(lineFragment.children.first as xml.XmlElement);
     lineSymbolizers.add(lSym);
   }
 
@@ -426,7 +438,7 @@ class Rule {
       if (element.outerXml
           .toUpperCase()
           .contains(LINESYMBOLIZER.toUpperCase())) {
-        var tmpSymbolizer = LineSymbolizer(element);
+        var tmpSymbolizer = LineSymbolizer(element as xml.XmlElement);
         if (style == tmpSymbolizer.style) {
           removed = true;
           bool removedSym = false;
@@ -448,7 +460,7 @@ class Rule {
   void addPointStyle(PointStyle style) {
     var pointFragment = makePointStyleBuildFragment(style);
     ruleXmlElement.children.add(pointFragment);
-    var pSym = PointSymbolizer(pointFragment.children.first);
+    var pSym = PointSymbolizer(pointFragment.children.first as xml.XmlElement);
     pointSymbolizers.add(pSym);
   }
 
@@ -464,7 +476,7 @@ class Rule {
       if (element.outerXml
           .toUpperCase()
           .contains(POINTSYMBOLIZER.toUpperCase())) {
-        var tmpSymbolizer = PointSymbolizer(element);
+        var tmpSymbolizer = PointSymbolizer(element as xml.XmlElement);
         if (style == tmpSymbolizer.style) {
           removed = true;
           bool removedSym = false;

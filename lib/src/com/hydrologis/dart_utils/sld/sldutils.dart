@@ -107,14 +107,16 @@ void _getStroke(xml.XmlElement xmlElement, dynamic styleObject) {
       for (var parameter in parameters) {
         var attrName = parameter.getAttribute(ATTRIBUTE_NAME);
 
-        if (StringUtilities.equalsIgnoreCase(attrName, ATTRIBUTE_STROKE)) {
-          styleObject.strokeColorHex = parameter.text;
-        } else if (StringUtilities.equalsIgnoreCase(
-            attrName, ATTRIBUTE_STROKE_WIDTH)) {
-          styleObject.strokeWidth = double.parse(parameter.text);
-        } else if (StringUtilities.equalsIgnoreCase(
-            attrName, ATTRIBUTE_STROKE_OPACITY)) {
-          styleObject.strokeOpacity = double.parse(parameter.text);
+        if (attrName != null) {
+          if (StringUtilities.equalsIgnoreCase(attrName, ATTRIBUTE_STROKE)) {
+            styleObject.strokeColorHex = parameter.text;
+          } else if (StringUtilities.equalsIgnoreCase(
+              attrName, ATTRIBUTE_STROKE_WIDTH)) {
+            styleObject.strokeWidth = double.parse(parameter.text);
+          } else if (StringUtilities.equalsIgnoreCase(
+              attrName, ATTRIBUTE_STROKE_OPACITY)) {
+            styleObject.strokeOpacity = double.parse(parameter.text);
+          }
         }
       }
     }
@@ -129,7 +131,7 @@ Iterable<xml.XmlElement> _getParamters(xml.XmlElement element) {
   return parameters;
 }
 
-xml.XmlElement _findSingleElement(xml.XmlElement element, String tag) {
+xml.XmlElement? _findSingleElement(xml.XmlElement element, String tag) {
   var label = element.findElements(tag, namespace: DEF_NSP);
   if (label.isNotEmpty) {
     return label.first;

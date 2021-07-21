@@ -7,14 +7,10 @@ part of dart_hydrologis_utils;
 
 class TrendLine {
   List<dynamic> xyList;
-  double _slope;
-  double _yIntercept;
+  late double _slope;
+  late double _yIntercept;
 
   TrendLine(this.xyList) {
-    calculate();
-  }
-
-  void calculate() {
     var a = 0.0;
     var b1 = 0.0;
     var b2 = 0.0;
@@ -64,7 +60,7 @@ class FeatureSlidingAverage {
 
   FeatureSlidingAverage(this.xyList);
 
-  List<dynamic> smooth(int lookAhead, double slide) {
+  List<dynamic>? smooth(int lookAhead, double slide) {
     double sc;
     List<dynamic> res = [];
 

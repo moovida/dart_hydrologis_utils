@@ -27,7 +27,7 @@ class FileUtilities {
     }
   }
 
-  static String getExtension(String filePath) {
+  static String? getExtension(String filePath) {
     var lastDot = filePath.lastIndexOf(".");
     if (lastDot > 0) {
       return filePath.substring(lastDot + 1);
@@ -99,7 +99,7 @@ class FileUtilities {
   }
 
   /// Get the list of files names from a given [parentPath] and optionally filtered by [ext].
-  static List<String> getFilesInPathByExt(String parentPath, [String ext]) {
+  static List<String> getFilesInPathByExt(String parentPath, [String? ext]) {
     List<String> filenameList = [];
 
     try {
@@ -118,7 +118,7 @@ class FileUtilities {
 
   static List<List<dynamic>> listFiles(String parentPath,
       {bool doOnlyFolder = false,
-      List<String> allowedExtensions,
+      List<String>? allowedExtensions,
       bool doHidden = false,
       bool order = true}) {
     List<List<dynamic>> pathAndNameList = [];
@@ -216,7 +216,7 @@ abstract class AFileReader {
 class FileReaderRandom extends AFileReader {
   final File _file;
   bool _isOpen = false;
-  RandomAccessFile channel;
+  late RandomAccessFile channel;
 
   FileReaderRandom(this._file) {
     channel = _file.openSync();
@@ -287,7 +287,7 @@ class FileReaderRandom extends AFileReader {
   @override
   void close() {
     if (channel is RandomAccessFile) {
-      channel?.closeSync();
+      channel.closeSync();
     }
   }
 }
@@ -296,7 +296,7 @@ class FileReaderRandom extends AFileReader {
 ///
 /// Simplifies access to data.
 class LByteBuffer {
-  List<int> _data;
+  late List<int> _data;
 
   int _position = 0;
   int _mark = -1;
@@ -306,7 +306,7 @@ class LByteBuffer {
   final bool readOnly;
   final bool doSigned;
 
-  LByteBuffer.fromData(List data,
+  LByteBuffer.fromData(List<int> data,
       {this.readOnly = false, this.doSigned = false}) {
     if (doSigned) {
       _data = Int8List.fromList(data);
@@ -480,7 +480,7 @@ class LByteBuffer {
 class FileWriter {
   final File _file;
   bool _isOpen = false;
-  RandomAccessFile randomAccessFile;
+  late RandomAccessFile randomAccessFile;
 
   FileWriter(this._file, {overwrite: true}) {
     if (_file.existsSync()) {

@@ -7,27 +7,21 @@ part of dart_hydrologis_utils;
  */
 class StringUtilities {
   static bool equalsIgnoreCase(String string1, String string2) {
-    return string1?.toLowerCase() == string2?.toLowerCase();
+    return string1.toLowerCase() == string2.toLowerCase();
   }
 
   /// Format [meters] to be Km or meters.
   static String formatMeters(double meters) {
-    if (meters != null) {
-      if (meters >= 1000) {
-        var totalKm = meters / 1000.0;
-        return "${totalKm.toStringAsFixed(1)} km";
-      } else {
-        return "${meters.round()} m";
-      }
+    if (meters >= 1000) {
+      var totalKm = meters / 1000.0;
+      return "${totalKm.toStringAsFixed(1)} km";
+    } else {
+      return "${meters.round()} m";
     }
-    return null;
   }
 
   /// Format a [durationMillis] in milliseconds to contain the hours/minutes/seconds part.
   static String formatDurationMillis(int durationMillis) {
-    if (durationMillis == null) {
-      return null;
-    }
     double durationSeconds = durationMillis / 1000;
     String durationStr = "${durationSeconds.toInt()} sec";
     if (durationSeconds > 60) {

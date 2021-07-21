@@ -17,7 +17,7 @@ class NetworkUtilities {
   }
 
   /// Get the first ip address found in the [NetworkInterface.list()].
-  static Future<String> getFirstIpAddress() async {
+  static Future<String?> getFirstIpAddress() async {
     for (var interface in await NetworkInterface.list()) {
       for (var addr in interface.addresses) {
         return addr.address;
@@ -32,15 +32,13 @@ class NetworkUtilities {
 abstract class HyServerSocketService {
   final bool _isConnected = false;
 
-  WebSocket webSocket;
-  String _host;
+  late WebSocket webSocket;
+  String? _host;
   final String _port;
 
   /// Create the object ad connect using [_host] and [_port].
   /// If _host is not set, the ipaddress of the device is guessed.
   HyServerSocketService(this._port, [this._host]) {
-    assert(_port != null);
-
     checkConnection();
   }
 
@@ -62,4 +60,3 @@ abstract class HyServerSocketService {
 
   Future<void> onMessage(data);
 }
-

@@ -7,8 +7,8 @@ part of dart_hydrologis_utils;
 
 /// Image utilities
 class ImageUtilities {
-  static img.Image imageFromBytes(List<int> bytes) {
-    img.Image image = img.decodeImage(bytes);
+  static img.Image? imageFromBytes(List<int> bytes) {
+    img.Image? image = img.decodeImage(bytes);
     return image;
   }
 
@@ -25,8 +25,8 @@ class ImageUtilities {
   }
 
   static List<int> resizeImage(Uint8List bytes,
-      {int newWidth = 100, int longestSizeTo}) {
-    img.Image image = img.decodeImage(bytes);
+      {int newWidth = 100, int? longestSizeTo}) {
+    img.Image image = decodeWithCheck(bytes);
 
     img.Image thumbnail;
     if (longestSizeTo != null) {
@@ -51,14 +51,22 @@ class ImageUtilities {
     return encodeJpg;
   }
 
+  static img.Image decodeWithCheck(Uint8List bytes) {
+    img.Image? image = img.decodeImage(bytes);
+    if (image == null) {
+      throw StateError("No image can be decoded from input data.");
+    }
+    return image;
+  }
+
   /// Makes pixels of the image [bytes] transparent if color is defined as [r], [g], [b].
   ///
   /// The resulting bytes are encoded as pn.
   static Uint8List colorToAlpha(Uint8List bytes, int r, int g, int b) {
-    final image = img.decodeImage(bytes);
+    img.Image image = decodeWithCheck(bytes);
     colorToAlphaImg(image, r, g, b);
 
-    return img.encodePng(image);
+    return img.encodePng(image) as Uint8List;
   }
 
   /// Makes pixels of the [image] transparent if color is defined as [r], [g], [b].
