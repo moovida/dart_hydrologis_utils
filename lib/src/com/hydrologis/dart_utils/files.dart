@@ -497,7 +497,7 @@ class FileWriter {
   bool get isOpen => _isOpen;
 
   void close() {
-    randomAccessFile?.closeSync();
+    randomAccessFile.closeSync();
   }
 
   Future<void> put(List<int> buffer) async {

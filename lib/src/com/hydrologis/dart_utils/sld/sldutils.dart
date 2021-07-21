@@ -283,7 +283,6 @@ xml.XmlDocumentFragment makePointStyleBuildFragment(PointStyle style) {
   xml.XmlBuilder builder = xml.XmlBuilder();
   builder.namespace(uriSld, SLD_NSP);
   builder.element(POINTSYMBOLIZER, namespace: uriSld, nest: () {
-    style.markerName ??= WktMarkers.CIRCLE.name;
     builder.element(GRAPHIC, namespace: uriSld, nest: () {
       // marker size
       builder.element(SIZE, namespace: uriSld, nest: () {

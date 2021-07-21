@@ -526,7 +526,7 @@ void main() {
               reason: "$byte is not ${chinShpBytes[i]}");
         }
       } finally {
-        reader?.close();
+        reader.close();
       }
     });
   });
@@ -655,7 +655,7 @@ void main() {
       List<dynamic>? smooth = avg.smooth(3, 0.9);
 
       expect(smooth![2][0], 1.4);
-      expect(smooth![4][0], 0.6);
+      expect(smooth[4][0], 0.6);
     });
 
     test('trendline test', () async {
