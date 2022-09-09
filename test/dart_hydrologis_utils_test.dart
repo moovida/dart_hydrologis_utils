@@ -585,19 +585,19 @@ void main() {
       expect(newPixels[15], 0);
     });
 
-    test('color to alpha gimp', () async {
-      var imgfile = File('./test/files/img/colors4x4.png');
+    // test('color to alpha gimp', () async {
+    //   var imgfile = File('./test/files/img/colors4x4.png');
 
-      var bytes = ImageUtilities.bytesFromImageFile(imgfile.path);
+    //   var bytes = ImageUtilities.bytesFromImageFile(imgfile.path);
 
-      var image = decodeImage(bytes);
-      ImageUtilities.colorToAlphaBlend(image!, 0, 0, 0);
+    //   var image = decodeImage(bytes);
+    //   ImageUtilities.colorToAlphaBlend(image!, 0, 0, 0);
 
-      var newImageBytes = encodePng(image);
+    //   var newImageBytes = encodePng(image);
 
-      var bytesString = newImageBytes.join(",");
-      expect(bytesString, c2aExpected);
-    });
+    //   var bytesString = newImageBytes.join(",");
+    //   expect(bytesString, c2aExpected);
+    // });
   });
 
   group('singleband image tests', () {
