@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
@@ -553,6 +554,16 @@ void main() {
     });
     test('chinese utf8', () async {
       await checkUtf8("chinese", "我能吞下玻璃而不伤身体。");
+    });
+
+    test('encoding tests', () async {
+      var lines = FileUtilities.readFileToList(
+          "./test/files/charsets/ascii.txt",
+          encoding: AsciiCodec());
+      expect(lines[1], "premie?re is slightly different");
+      lines = FileUtilities.readFileToList("./test/files/charsets/latin1.txt",
+          encoding: Latin1Codec());
+      expect(lines[0], "première is first");
     });
   });
 

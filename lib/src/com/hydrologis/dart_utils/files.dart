@@ -9,6 +9,12 @@ part of dart_hydrologis_utils;
 
 /// File path and folder utilities.
 class FileUtilities {
+  static var fallBackEncodings = [
+    Latin1Codec(),
+    AsciiCodec(),
+    Utf8Codec(allowMalformed: true) // last
+  ];
+
   static String joinPaths(String path1, String path2) {
     if (path2.startsWith('/')) {
       path2 = path2.substring(1);
@@ -40,16 +46,40 @@ class FileUtilities {
     return dirname(filePath);
   }
 
-  static String readFile(String filePath) {
-    return File(filePath).readAsStringSync();
+  static String readFile(String filePath,
+      {Encoding encoding = utf8, saveMode = false}) {
+    String? text = null;
+    try {
+      text = File(filePath).readAsStringSync(encoding: encoding);
+      if (saveMode && text.isEmpty) {
+        // if it is empty, set to null and try other ways
+        text = null;
+      }
+    } on Exception catch (e, s) {
+      text = null;
+    }
+    if (text == null) {
+      for (var tryEncoding in fallBackEncodings) {
+        try {
+          text = File(filePath).readAsStringSync(encoding: tryEncoding);
+          if (text.isNotEmpty) {
+            break;
+          }
+        } on Exception catch (e, s) {
+          // ignore
+        }
+      }
+    }
+    return text!;
   }
 
   static List<int> readFileBytes(String filePath) {
     return File(filePath).readAsBytesSync();
   }
 
-  static List<String> readFileToList(String filePath) {
-    var fileText = readFile(filePath);
+  static List<String> readFileToList(String filePath,
+      {Encoding encoding = utf8, saveMode = false}) {
+    var fileText = readFile(filePath, encoding: encoding, saveMode: saveMode);
     List<String> split = fileText.split('\n');
     return split;
   }
@@ -71,8 +101,11 @@ class FileUtilities {
   ///
   /// Empty lines are ignored, as well as lines that do not contain the separator.
   static Map<String, String> readFileToHashMap(String filePath,
-      {String separator = "=", bool valueFirst = false}) {
-    var fileTxt = readFile(filePath);
+      {String separator = "=",
+      bool valueFirst = false,
+      Encoding encoding = utf8,
+      saveMode = false}) {
+    var fileTxt = readFile(filePath, encoding: encoding, saveMode: saveMode);
     var lines = fileTxt.split("\n");
 
     Map<String, String> propertiesMap = {};

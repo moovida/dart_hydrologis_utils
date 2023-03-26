@@ -6,7 +6,7 @@ import 'dart:typed_data';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:image/image.dart' as img;
-import 'dart:convert' show utf8;
+import 'dart:convert';
 import 'package:xml/xml.dart' as xml;
 
 part 'src/com/hydrologis/dart_utils/files.dart';
