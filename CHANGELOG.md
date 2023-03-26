@@ -1,3 +1,7 @@
+## 0.6.2
+
+Added encoding options for reading text files.
+
 ## 0.6.1
 
 - dependencies upgrade
