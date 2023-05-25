@@ -1,3 +1,7 @@
+## 0.6.3
+
+Updates to align with other libs.
+
 ## 0.6.2
 
 Added encoding options for reading text files.
