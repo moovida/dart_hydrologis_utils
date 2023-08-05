@@ -19,7 +19,7 @@ class SldObjectParser {
   /// Parse the SLD xml.
   void parse() {
     var root = document.findElements(STYLEDLAYERDESCRIPTOR, namespace: DEF_NSP);
-    if (root == null || root.isEmpty) {
+    if (root.isEmpty) {
       throw ArgumentError("The file doesn't seem to be an SLD file.");
     } else {
       var featureTypeStyleList =
