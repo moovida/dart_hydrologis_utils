@@ -7,18 +7,18 @@ class PointSymbolizer {
     var graphicElem = _findSingleElement(xmlElement, GRAPHIC);
     if (graphicElem != null) {
       var sizeElem = _findSingleElement(graphicElem, SIZE);
-      if (sizeElem != null && sizeElem.value != null) {
-        style.markerSize = double.tryParse(sizeElem.value!) ?? 10;
+      if (sizeElem != null) {
+        style.markerSize = double.parse(sizeElem.text);
       }
       var markElem = _findSingleElement(graphicElem, MARK);
       if (markElem != null) {
         var wkNameElem = _findSingleElement(markElem, WELLKNOWNNAME);
-        if (wkNameElem != null && wkNameElem.value != null) {
+        if (wkNameElem != null) {
           try {
-            style.markerName = WktMarkers.forName(wkNameElem.value!).name;
+            style.markerName = WktMarkers.forName(wkNameElem.text).name;
           } catch (e) {
-            // assume the end system allows for more icons
-            style.markerName = wkNameElem.value!;
+            // assume it is a custom marked, the endsystem will take care of
+            style.markerName = wkNameElem.text;
           }
         }
         _getFill(markElem, style);
@@ -53,7 +53,7 @@ class TextSymbolizer {
     if (label != null) {
       var labelNameElem = _findSingleElement(label, PROPERTY_NAME);
       if (labelNameElem != null) {
-        style.labelName = labelNameElem.value ?? "";
+        style.labelName = labelNameElem.text;
       }
     }
 
@@ -64,9 +64,8 @@ class TextSymbolizer {
         var nameAttr = parameter.getAttribute(ATTRIBUTE_NAME);
 
         if (nameAttr != null &&
-            StringUtilities.equalsIgnoreCase(nameAttr, ATTRIBUTE_FONT_SIZE) &&
-            parameter.value != null) {
-          style.size = double.parse(parameter.value!);
+            StringUtilities.equalsIgnoreCase(nameAttr, ATTRIBUTE_FONT_SIZE)) {
+          style.size = double.parse(parameter.text);
         }
       }
     }
