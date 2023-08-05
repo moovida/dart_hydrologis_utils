@@ -1,3 +1,7 @@
+## 0.6.4
+
+Allow for external marker names for point style.
+
 ## 0.6.3
 
 Updates to align with other libs.
