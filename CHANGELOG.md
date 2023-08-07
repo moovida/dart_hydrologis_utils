@@ -1,3 +1,7 @@
+## 0.7.0
+
+Add simple feature support classes and jts dependency.
+
 ## 0.6.4
 
 Allow for external marker names for point style.

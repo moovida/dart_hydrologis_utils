@@ -1,6 +1,6 @@
 name: dart_hydrologis_utils
 description: Common dart utilities lib for our projects.
-version: 0.6.4
+version: 0.7.0
 repository: https://github.com/moovida/dart_hydrologis_utils
 issue_tracker: https://github.com/moovida/dart_hydrologis_utils/issues
 
