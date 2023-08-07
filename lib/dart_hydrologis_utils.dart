@@ -8,12 +8,14 @@ import 'package:path/path.dart';
 import 'package:image/image.dart' as img;
 import 'dart:convert';
 import 'package:xml/xml.dart' as xml;
+import 'package:dart_jts/dart_jts.dart';
 
 part 'src/com/hydrologis/dart_utils/files.dart';
 part 'src/com/hydrologis/dart_utils/numeric.dart';
 part 'src/com/hydrologis/dart_utils/bytes.dart';
 part 'src/com/hydrologis/dart_utils/hashes.dart';
 part 'src/com/hydrologis/dart_utils/networks.dart';
+part 'src/com/hydrologis/dart_utils/gis.dart';
 part 'src/com/hydrologis/dart_utils/times.dart';
 part 'src/com/hydrologis/dart_utils/images.dart';
 part 'src/com/hydrologis/dart_utils/strings.dart';
