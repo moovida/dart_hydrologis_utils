@@ -1,3 +1,7 @@
+## 0.8.0
+
+Move images stuff to geoimage package.
+
 ## 0.7.0
 
 Add simple feature support classes and jts dependency.
