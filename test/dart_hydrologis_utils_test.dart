@@ -1,11 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
-import 'dart:typed_data';
 
-import 'package:image/image.dart';
-import 'package:test/test.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('SLD Reader tests', () {
@@ -577,74 +574,6 @@ void main() {
       expect(StringUtilities.formatDurationMillis(1000), "1 sec");
       expect(StringUtilities.formatDurationMillis(100000), "1 min, 40 sec");
       expect(StringUtilities.formatDurationMillis(10000000), "2 h, 46 min");
-    });
-  });
-  group('image tests', () {
-    test('color to alpha', () async {
-      var imgfile = File('./test/files/img/blackred2x2.png');
-
-      var bytes = ImageUtilities.bytesFromImageFile(imgfile.path);
-      var newBytes = ImageUtilities.colorToAlpha(bytes as Uint8List, 0, 0, 0);
-
-      var newImage = decodeImage(newBytes);
-      var newPixels = newImage!.getBytes(format: Format.rgba);
-
-      //check changed alpha
-      expect(newPixels[3], 0);
-      expect(newPixels[7], 255);
-      expect(newPixels[11], 255);
-      expect(newPixels[15], 0);
-    });
-
-    // test('color to alpha gimp', () async {
-    //   var imgfile = File('./test/files/img/colors4x4.png');
-
-    //   var bytes = ImageUtilities.bytesFromImageFile(imgfile.path);
-
-    //   var image = decodeImage(bytes);
-    //   ImageUtilities.colorToAlphaBlend(image!, 0, 0, 0);
-
-    //   var newImageBytes = encodePng(image);
-
-    //   var bytesString = newImageBytes.join(",");
-    //   expect(bytesString, c2aExpected);
-    // });
-  });
-
-  group('singleband image tests', () {
-    test('dtm test', () async {
-      var imgfile = File('./test/files/singleband/dtm_test.tiff');
-      var bytes = ImageUtilities.bytesFromImageFile(imgfile.path);
-
-      var image = TiffDecoder().decodeHdrImage(bytes);
-      expect(image!.width, 10);
-      expect(image.height, 8);
-
-      for (var row = 0; row < image.height; row++) {
-        for (var col = 0; col < image.width; col++) {
-          var redValue = image.red!.getFloat(col, row);
-          if (redValue == -10000.0) {
-            // the image library doesn't read the novalue properly
-            // for now ignore it
-            continue;
-          }
-          expect(redValue, expectedSingleBandData[row][col]);
-        }
-      }
-      var float32list = image.toFloatRgba();
-      var cols = image.width;
-      for (var row = 0; row < image.height; row++) {
-        for (var col = 0; col < cols; col++) {
-          var index = row * cols * 4 + col * 4;
-          var value = float32list[index];
-          if (value == -10000.0) {
-            // the image library doesn't read the novalue properly
-            // for now ignore it
-            continue;
-          }
-          expect(value, expectedSingleBandData[row][col]);
-        }
-      }
     });
   });
 
