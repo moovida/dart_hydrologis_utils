@@ -1,7 +1,7 @@
 part of dart_hydrologis_utils;
 
 /*
- * Copyright (c) 2019-2020. Antonello Andrea (www.hydrologis.com). All rights reserved.
+ * Copyright (c) 2019-2023. Antonello Andrea (www.hydrologis.com). All rights reserved.
  * Use of this source code is governed by a BSD 3 license that can be
  * found in the LICENSE file.
  */

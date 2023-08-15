@@ -15,6 +15,7 @@ part 'src/com/hydrologis/dart_utils/bytes.dart';
 part 'src/com/hydrologis/dart_utils/hashes.dart';
 part 'src/com/hydrologis/dart_utils/networks.dart';
 part 'src/com/hydrologis/dart_utils/gis.dart';
+part 'src/com/hydrologis/dart_utils/db.dart';
 part 'src/com/hydrologis/dart_utils/times.dart';
 part 'src/com/hydrologis/dart_utils/strings.dart';
 part 'src/com/hydrologis/dart_utils/charset.dart';

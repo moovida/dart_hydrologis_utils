@@ -1,3 +1,7 @@
+## 0.8.1
+
+Move here interfaces for query results in upstream packages.
+
 ## 0.8.0
 
 Move images stuff to geoimage package.
