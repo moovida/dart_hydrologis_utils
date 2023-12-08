@@ -1,6 +1,6 @@
 name: dart_hydrologis_utils
 description: Common dart utilities lib for our projects.
-version: 0.8.1+1
+version: 0.8.1+2
 repository: https://github.com/moovida/dart_hydrologis_utils
 issue_tracker: https://github.com/moovida/dart_hydrologis_utils/issues
 
@@ -13,9 +13,9 @@ dependencies:
   # BSD
   intl: '>=0.16.1'
   
-  path: ^1.8.3
+  path: '>=1.8.3'
   #BSD
-  dart_jts: ^0.2.3
+  dart_jts: '>=0.2.3'
 
   # MIT
   xml: ^6.3.0 
