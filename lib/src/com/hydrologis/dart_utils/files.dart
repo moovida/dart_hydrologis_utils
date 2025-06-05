@@ -197,15 +197,71 @@ class FileUtilities {
     return pathAndNameList;
   }
 
+  /// Check if a file/folder exists.
+  static bool exists(String path) {
+    return isFile(path) || isFolder(path);
+  }
+
+  /// Check if a path is a file.
+  static bool isFile(String path) {
+    return FileSystemEntity.isFileSync(path);
+  }
+
+  /// Check if a path is a folder.
+  static bool isFolder(String path) {
+    return FileSystemEntity.isDirectorySync(path);
+  }
+
+  /// Get a temporary folder.
+  ///
+  /// This method creates the folder.
+  static Directory getTmpFolder({String prefix = 'tmp_'}) {
+    var dir = Directory.systemTemp.createTempSync(prefix);
+    return dir;
+  }
+
   /// Get a temporary file.
   ///
   /// This method doesn't create the file.
-  static File getTmpFile(ext, {prefix: 'tmp_', postfix}) {
+  static File getTmpFile(ext, {prefix = 'tmp_', postfix}) {
     postfix ??= TimeUtilities.DAYHOURMINUTE_TS_FORMATTER.format(DateTime.now());
     var fileName = prefix + postfix + '.' + ext;
 
     var dir = Directory.systemTemp.createTempSync();
     return File("${dir.path}/$fileName");
+  }
+
+  /// Delete files and folders recursively inside a folder.
+  static void deleteFilesOrFolders(String path,
+      {bool deleteAlsoRootFolder = false}) {
+    if (isFile(path)) {
+      File(path).deleteSync();
+      return;
+    }
+
+    if (isFolder(path)) {
+      Directory dir = Directory(path);
+      if (dir.existsSync()) {
+        dir.listSync(recursive: true).forEach((FileSystemEntity fse) {
+          if (fse is File && fse.existsSync()) {
+            fse.deleteSync();
+          } else if (fse is Directory && fse.existsSync()) {
+            fse.deleteSync(recursive: true);
+          }
+        });
+        if (deleteAlsoRootFolder) {
+          dir.deleteSync();
+        }
+      }
+    }
+  }
+
+  // Create a folder (or folders) if it does not exist.
+  static void mkDir(String path) {
+    Directory dir = Directory(path);
+    if (!dir.existsSync()) {
+      dir.createSync(recursive: true);
+    }
   }
 }
 

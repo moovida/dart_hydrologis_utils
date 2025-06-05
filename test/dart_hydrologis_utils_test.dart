@@ -527,6 +527,54 @@ void main() {
         reader.close();
       }
     });
+
+    test('create folders and files and delete rcursively', () async {
+      var testDir =
+          FileUtilities.getTmpFolder(prefix: 'dart_hydrologis_utils_test');
+      expect(testDir.existsSync(), true);
+      var subDir1Str = '${testDir.path}/subdir1';
+      var subDir2Str = '${testDir.path}/subdir2';
+      var subSubDir1Str = '$subDir1Str/subsubdir1';
+
+      FileUtilities.mkDir(subSubDir1Str);
+      expect(FileUtilities.exists(subDir1Str), true);
+      expect(FileUtilities.exists(subSubDir1Str), true);
+      FileUtilities.mkDir(subDir2Str);
+      expect(FileUtilities.exists(subDir2Str), true);
+
+      // create a file in subsubdir1
+      var file1 = File('$subSubDir1Str/file1.txt');
+      await file1.writeAsString('This is a test file 1');
+      expect(file1.existsSync(), true);
+      // create a file in subdir2
+      var file2 = File('$subDir2Str/file2.txt');
+      await file2.writeAsString('This is a test file 2');
+      expect(file2.existsSync(), true);
+      // create a file in the main test dir
+      var file3 = File('${testDir.path}/file3.txt');
+      await file3.writeAsString('This is a test file 3');
+      expect(file3.existsSync(), true);
+      // create a file in subdir1
+      var file4 = File('$subDir1Str/file4.txt');
+      await file4.writeAsString('This is a test file 4');
+      expect(file4.existsSync(), true);
+
+      // delete the test dir recursively
+      FileUtilities.deleteFilesOrFolders(testDir.path,
+          deleteAlsoRootFolder: false);
+      expect(testDir.existsSync(), true);
+      expect(FileUtilities.exists(subDir1Str), false);
+      expect(FileUtilities.exists(subSubDir1Str), false);
+      expect(FileUtilities.exists(subDir2Str), false);
+      expect(file1.existsSync(), false);
+      expect(file2.existsSync(), false);
+      expect(file3.existsSync(), false);
+      expect(file4.existsSync(), false);
+      // delete the test dir also
+      FileUtilities.deleteFilesOrFolders(testDir.path,
+          deleteAlsoRootFolder: true);
+      expect(testDir.existsSync(), false);
+    });
   });
   group('Charset tests', () {
     // test strings taken from; http://kermitproject.org/utf8.html

@@ -1,3 +1,7 @@
+## 0.8.2
+
+More utilities to handle files and folders.
+
 ## 0.8.1
 
 Move here interfaces for query results in upstream packages.
