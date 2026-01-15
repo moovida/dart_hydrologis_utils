@@ -1,3 +1,7 @@
+## 0.8.3
+
+Fixes to file listing utility.
+
 ## 0.8.2
 
 More utilities to handle files and folders.
