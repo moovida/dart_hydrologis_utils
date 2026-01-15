@@ -161,7 +161,7 @@ class FileUtilities {
       for (var fse in list) {
         String path = fse.path;
         String filename = basename(path);
-        if (filename.startsWith(".")) {
+        if (!doHidden && filename.startsWith(".")) {
           continue;
         }
         String parentname = dirname(path);
@@ -188,11 +188,13 @@ class FileUtilities {
       print(e);
     }
 
-    pathAndNameList.sort((o1, o2) {
-      String n1 = o1[1];
-      String n2 = o2[1];
-      return n1.compareTo(n2);
-    });
+    if (order) {
+      pathAndNameList.sort((o1, o2) {
+        String n1 = o1[1];
+        String n2 = o2[1];
+        return n1.toLowerCase().compareTo(n2.toLowerCase());
+      });
+    }
 
     return pathAndNameList;
   }
