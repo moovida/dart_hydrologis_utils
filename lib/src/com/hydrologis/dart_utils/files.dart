@@ -190,6 +190,12 @@ class FileUtilities {
 
     if (order) {
       pathAndNameList.sort((o1, o2) {
+        final bool aDir = o1[2] as bool;
+        final bool bDir = o2[2] as bool;
+        if (aDir != bDir) {
+          return aDir ? -1 : 1;
+        }
+
         String n1 = o1[1];
         String n2 = o2[1];
         return n1.toLowerCase().compareTo(n2.toLowerCase());
